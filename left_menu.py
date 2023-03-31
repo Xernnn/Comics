@@ -1,19 +1,19 @@
 import tkinter as tk
 
 class LeftMenu:
-    def __init__(self):
+    def __init__(self, details_frame, master=None, content=None):
+        self.master = master
+        self.content = content
+        self.details_frame = details_frame
         self.menu_visible = False
         self.create_left_menu()
     
     def toggle_left_menu(self, event):
         if self.menu_visible:
             self.hide_left_menu()
-            self.scrollable_frame.pack_forget()
-            self.scrollable_frame.pack(fill=tk.BOTH, expand=True)
         else:
             self.left_menu_frame.place(x=0, y=66, width=250, height=1000)
-            self.scrollable_frame.pack_forget()
-            self.scrollable_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+            self.left_menu_frame.lift()
         self.menu_visible = not self.menu_visible
 
 
@@ -66,6 +66,28 @@ class LeftMenu:
                 )  # Center the buttons horizontally
                 button.bind("<Enter>", lambda e, b=button: b.configure(bg="#5C5C5C"))  # Hover effect
                 button.bind("<Leave>", lambda e, b=button: b.configure(bg="#3C3C3C"))  # Hover effect
-
+        
         return button_frame
 
+                
+    def sidebar_action(self, button_text):
+        if button_text == "Sort by Title":
+            # sorted_comics = sorted(self.content.comics, key=lambda x: x["title"])
+            print("Sorted by title")
+        elif button_text == "Sort by Release":
+            # sorted_comics = sorted(self.content.comics, key=lambda x: x["year"])
+            print("Sorted by Release")
+        elif button_text == "Sort by Rating":
+            # Assuming you have a "rating" key in your comic dictionary
+            # sorted_comics = sorted(self.content.comics, key=lambda x: x["rating"], reverse=True)
+            print("Sorted by Rating")
+        elif button_text == "Sort by Views":
+            # Assuming you have a "views" key in your comic dictionary
+            # sorted_comics = sorted(self.content.comics, key=lambda x: x["views"], reverse=True)
+            print("Sorted by Views")
+        else:
+            return  # Do nothing if it's not a sorting button
+
+        # self.content.display_comics(sorted_comics)
+
+        

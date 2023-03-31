@@ -6,10 +6,12 @@ from lorem_text import lorem
 import os
 
 class Content:
-    def __init__(self):
+    def __init__(self, details_frame):
+        self.details_frame = details_frame
         self.create_content()
+        self.comics = []
 
-    def create_content(self):
+    def create_content(self, comics = None):
         self.scroll_frame = tk.Frame(
             self.details_frame,
             bg="#1A1918"
@@ -88,17 +90,29 @@ class Content:
         #         "cover": "C:/Users/Admin/OneDrive/Documents/University of Science and Technology Hanoi/Advance Python/Comic Information Management System/orgasm.jpg"
         #     }
         # ]
-        comics = []
-        for i in range(30):
-            title = lorem.words(random.randint(1, 4))
-            issue = f"Issue #{random.randint(1, 100)}"
-            writer = lorem.words(random.randint(1, 3))
-            artist = lorem.words(random.randint(1, 3))
-            publisher = lorem.words(random.randint(1, 2))
-            year = random.randint(1950, 2022)
-            cover = "images/orgasm.jpg"
-            comics.append({"title": title, "issue": issue, "writer": writer, "artist": artist, "publisher": publisher, "year": year, "cover": cover})
-
+        if comics is None:
+            comics = []
+            for i in range(30):
+                title = lorem.words(random.randint(1, 4))
+                issue = f"Issue #{random.randint(1, 100)}"
+                writer = lorem.words(random.randint(1, 3))
+                artist = lorem.words(random.randint(1, 3))
+                publisher = lorem.words(random.randint(1, 2))
+                year = random.randint(1950, 2022)
+                cover = "images/orgasm.jpg"
+                comics.append({
+                    "title": title, 
+                    "issue": issue, 
+                    "writer": writer, 
+                    "artist": artist, 
+                    "publisher": publisher, 
+                    "year": year, 
+                    "cover": cover
+                })
+            
+        # self.display_comics(comics)
+        self.comics = comics
+    
         # Display comic covers and information
         padding_x = 15
         padding_y = 10
@@ -192,12 +206,22 @@ class Content:
                         bg="#1A1918"
                     )
                     year_label.grid(row=5, column=0, padx=10, pady=(0, 10), sticky="w")
-
-                    # Add the comic frame to the scrollable frame
-                    # comic_frame.grid(row=i, column=j, padx=padding_x, pady=padding_y, sticky="nsew")
-
+        
         self.scrollable_frame.columnconfigure(list(range(max_columns)), weight=1)
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         
+    def display_comics(self, comics_to_display):
+        # Remove any existing content
+        for child in self.scrollable_frame.winfo_children():
+            child.destroy()
+
+        # Call the create_content method with the filtered comics
+        self.create_content(comics_to_display)
+
     def _on_mouse_wheel(self, event):
         self.canvas.yview_scroll(-1 * int(event.delta / 120), "units")
+
+    def search_comic(self, search_query):
+        search_query = search_query.lower()
+        search_results = [comic for comic in self.comics if search_query in comic["title"].lower()]
+        self.display_comics(search_results)
