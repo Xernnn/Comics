@@ -1,21 +1,40 @@
 import tkinter as tk
 from PIL import Image, ImageTk
+import random
+from lorem_text import lorem
 
 class UserInfo:
     def __init__(self, window):
         self.window = window
-        self.user_data = {
+        
+        # self.user_data = {
+        #     'avatar': 'images/orgasm.jpg',
+        #     'username': 'Xern',
+        #     'email': 'sonn.bi12-389@st.usth.edu.vn',
+        #     'age': 20,
+        #     'member_since': '28/11/2021',
+        #     'user_role': 'administrator',
+        #     'favorite': 'Spider-man',
+        #     'comics_followed': 118,
+        #     'comics_read': 135,
+        #     'chapters_read': 2184
+        # }
+        
+        # if user_data is None:
+        user_data = {
             'avatar': 'images/orgasm.jpg',
-            'username': 'Xern',
-            'email': 'sonn.bi12-389@st.usth.edu.vn',
-            'age': 20,
-            'member_since': '28/11/2021',
-            'user_role': 'administrator',
-            'favorite': 'Spider-man',
-            'comics_followed': 118,
-            'comics_read': 135,
-            'chapters_read': 2184
+            'username': lorem.words(1),
+            'email': f"{lorem.words(1)}@{lorem.words(1)}.com",
+            'age': random.randint(13, 99),
+            'member_since': f"{random.randint(1, 31)}/{random.randint(1, 12)}/{random.randint(2000, 2023)}",
+            'user_role': random.choice(['Administrator', 'User', 'Moderator']),
+            'favorite': lorem.words(random.randint(1, 3)),
+            'comics_followed': random.randint(1, 200),
+            'comics_read': random.randint(1, 300),
+            'chapters_read': random.randint(1, 5000)
         }
+
+        self.user_data = user_data
 
     def show_user_info(self, event=None):
         self.user_info_window = tk.Toplevel()
@@ -40,10 +59,10 @@ class UserInfo:
         avatar_label = tk.Label(self.user_info_window, image=avatar_image_button)
         avatar_label.image = avatar_image_button
         avatar_label.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), rowspan=6)
-
+        
         # User's info
         username_label = tk.Label(self.user_info_window, text=f"Username: {self.user_data['username']}")
-        username_label.grid(row=0, column=1, sticky=tk.W)
+        username_label.grid(row=0, column=1, sticky=tk.W, pady=(10, 0))
 
         age_label = tk.Label(self.user_info_window, text=f"Age: {self.user_data['age']}")
         age_label.grid(row=1, column=1, sticky=tk.W)

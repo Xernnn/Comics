@@ -1,21 +1,34 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
-import random
-from lorem_text import lorem
+import requests
 import os
+import mysql.connector as sql
 
-class Content:
-    def __init__(self, details_frame):
+
+db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
+cursor = db.cursor(buffered=True)
+
+class Content(tk.Frame):
+    def __init__(self, details_frame, show_details_callback=None):
+        super().__init__(details_frame)
         self.details_frame = details_frame
-        self.create_content()
         self.comics = []
+        self.show_details_callback = show_details_callback
 
-    def create_content(self, comics = None):
+        # Set up the content frame
+        self.create_content()
+
+        # Generate and display comics
+        self.comics = self.generate_comics(50)
+        self.display_comics(self.comics)
+
+    def create_content(self):
         self.scroll_frame = tk.Frame(
             self.details_frame,
-            bg="#1A1918"
+            bg="#2C2C2C"
         )
+
         self.scroll_frame.pack(fill=tk.BOTH, expand=True)
 
         self.canvas = tk.Canvas(self.scroll_frame, bg="#1A1918", highlightthickness=0)
@@ -26,202 +39,176 @@ class Content:
         self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
 
-        self.canvas.pack(side="left", fill="both", expand=True)
-        self.scrollbar.pack(side="right", fill="y")
+        self.canvas.grid(row=0, column=0, sticky="nsew")
+        self.scrollbar.grid(row=0, column=1, sticky="ns")
+        self.scroll_frame.grid_rowconfigure(0, weight=1)
+        self.scroll_frame.grid_columnconfigure(0, weight=1)
 
         # Bind mouse wheel scrolling
         self.scrollable_frame.bind("<Enter>", lambda _: self.scrollable_frame.focus_set())
         self.scrollable_frame.bind("<MouseWheel>", self._on_mouse_wheel)
 
-        # Comic data
-        # comics = [
-        #     {
-        #         "title": "Spider-Man",
-        #         "issue": "Amazing Spider-Man #1",
-        #         "writer": "Dan Slott",
-        #         "artist": "Humberto Ramos",
-        #         "publisher": "Marvel Comics",
-        #         "year": 2014,
-        #         "cover": "C:/Users/Admin/OneDrive/Documents/University of Science and Technology Hanoi/Advance Python/Comic Information Management System/orgasm.jpg"
-        #     },https://product.hstatic.net/200000343865/product/8_6afdb5e2d6aa4672b713460f8ec44d61_master.jpg
-        #     {
-        #         "title": "Batman",
-        #         "issue": "Batman #404",
-        #         "writer": "Frank Miller",
-        #         "artist": "David Mazzucchelli",
-        #         "publisher": "DC Comics",
-        #         "year": 1987,
-        #         "cover": "C:/Users/Admin/OneDrive/Documents/University of Science and Technology Hanoi/Advance Python/Comic Information Management System/orgasm.jpg"
-        #     },
-        #     {
-        #         "title": "Watchmen",
-        #         "issue": "#1",
-        #         "writer": "Alan Moore",
-        #         "artist": "Dave Gibbons",
-        #         "publisher": "DC Comics",
-        #         "year": 1986,
-        #         "cover": "C:/Users/Admin/OneDrive/Documents/University of Science and Technology Hanoi/Advance Python/Comic Information Management System/orgasm.jpg"
-        #     },
-        #     {
-        #         "title": "Saga",
-        #         "issue": "#1",
-        #         "writer": "Brian K. Vaughan",
-        #         "artist": "Fiona Staples",
-        #         "publisher": "Image Comics",
-        #         "year": 2012,
-        #         "cover": "C:/Users/Admin/OneDrive/Documents/University of Science and Technology Hanoi/Advance Python/Comic Information Management System/orgasm.jpg"
-        #     },
-        #     {
-        #         "title": "The Walking Dead",
-        #         "issue": "#1",
-        #         "writer": "Robert Kirkman",
-        #         "artist": "Tony Moore",
-        #         "publisher": "Image Comics",
-        #         "year": 2003,
-        #         "cover": "C:/Users/Admin/OneDrive/Documents/University of Science and Technology Hanoi/Advance Python/Comic Information Management System/orgasm.jpg"
-        #     },
-        #     {
-        #         "title": "X-Men",
-        #         "issue": "Giant-Size X-Men #1",
-        #         "writer": "Len Wein",
-        #         "artist": "Dave Cockrum",
-        #         "publisher": "Marvel Comics",
-        #         "year": 1975,
-        #         "cover": "C:/Users/Admin/OneDrive/Documents/University of Science and Technology Hanoi/Advance Python/Comic Information Management System/orgasm.jpg"
-        #     }
-        # ]
-        if comics is None:
-            comics = []
-            for i in range(30):
-                title = lorem.words(random.randint(1, 4))
-                issue = f"Issue #{random.randint(1, 100)}"
-                writer = lorem.words(random.randint(1, 3))
-                artist = lorem.words(random.randint(1, 3))
-                publisher = lorem.words(random.randint(1, 2))
-                year = random.randint(1950, 2022)
-                cover = "images/orgasm.jpg"
-                comics.append({
-                    "title": title, 
-                    "issue": issue, 
-                    "writer": writer, 
-                    "artist": artist, 
-                    "publisher": publisher, 
-                    "year": year, 
-                    "cover": cover
-                })
-            
-        # self.display_comics(comics)
-        self.comics = comics
-    
-        # Display comic covers and information
-        padding_x = 15
-        padding_y = 10
-        cover_width = 180
-        cover_height = 225
-        num_comics = len(comics)
-        max_columns = 3
-        rows = (num_comics + max_columns - 1) // max_columns
-
-        content_width = max_columns * (cover_width + padding_x)
-        content_height = rows * (cover_height + padding_y)
+    def generate_comics(self, num_comics):
+        cursor.execute("SELECT * from comics")
+        comics = cursor.fetchall()
+        comics = list(comics)
+        return comics
         
-        for i in range(rows):
-            for j in range(max_columns):
-                index = i * max_columns + j
-                if index < num_comics:
-                    comic = comics[index]
-                    # Comic frame
-                    comic_frame = tk.Frame(
-                        self.scrollable_frame,
-                        bg="#1A1918",
-                        highlightthickness=1,
-                        highlightbackground="#505050",
-                        highlightcolor="#505050",
-                        width=cover_width + 2*padding_x
-                    )
-                    comic_frame.grid(row=i, column=j, padx=padding_x, pady=padding_y, sticky="nsew")
-
-                    # Comic cover
-                    cover = ImageTk.PhotoImage(Image.open(comic["cover"]).resize((cover_width, cover_height)))
-                    cover_label = tk.Label(comic_frame, image=cover, bg="#1A1918")
-                    cover_label.image = cover
-                    cover_label.grid(row=0, column=0, padx=10)
-
-                    # Comic details
-                    details_frame = tk.Frame(comic_frame, bg="#1A1918")
-                    details_frame.grid(row=0, column=1, sticky="nsew")
-
-                    title_label = tk.Label(
-                        details_frame, 
-                        text=comic["title"], 
-                        font=("TkDefaultFont", 14), 
-                        fg="#F5F5F5", 
-                        bg="#1A1918",
-                        wraplength = cover_width - 20,
-                        anchor="w"
-                    )
-                    title_label.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="w")
-
-                    issue_label = tk.Label(
-                        details_frame, 
-                        text=comic["issue"], 
-                        font=("TkDefaultFont", 12), 
-                        fg="#CCCCCC", 
-                        bg="#1A1918"
-                    )
-                    issue_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="w")
-
-                    writer_label = tk.Label(
-                        details_frame, 
-                        text="Writer: " + comic["writer"], 
-                        font=("TkDefaultFont", 12), 
-                        fg="#F5F5F5", 
-                        bg="#1A1918"
-                    )
-                    writer_label.grid(row=2, column=0, padx=10, pady=(0, 5), sticky="w")
-
-                    artist_label = tk.Label(
-                        details_frame, 
-                        text="Artist: " + comic["artist"], 
-                        font=("TkDefaultFont", 12), 
-                        fg="#F5F5F5", 
-                        bg="#1A1918"
-                    )
-                    artist_label.grid(row=3, column=0, padx=10, pady=(0, 5), sticky="w")
-
-                    publisher_label = tk.Label(
-                        details_frame, 
-                        text="Publisher: " + comic["publisher"], 
-                        font=("TkDefaultFont", 12), 
-                        fg="#F5F5F5", 
-                        bg="#1A1918"
-                        )
-                    publisher_label.grid(row=4, column=0, padx=10, pady=(0, 5), sticky="w")
-
-                    year_label = tk.Label(
-                        details_frame, 
-                        text="Year: " + str(comic["year"]), 
-                        font=("TkDefaultFont", 12), 
-                        fg="#F5F5F5", 
-                        bg="#1A1918"
-                    )
-                    year_label.grid(row=5, column=0, padx=10, pady=(0, 10), sticky="w")
-        
-        self.scrollable_frame.columnconfigure(list(range(max_columns)), weight=1)
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         
     def display_comics(self, comics_to_display):
+        from comics import ComicDetails
+
+        max_columns = 5  # Define max_columns here
+        padding = 10
+
         # Remove any existing content
         for child in self.scrollable_frame.winfo_children():
             child.destroy()
 
-        # Call the create_content method with the filtered comics
-        self.create_content(comics_to_display)
+        # Update the "All Titles" label text
+        if hasattr(self, 'title_frame'):
+            all_titles_label = self.title_frame.winfo_children()[0]
+            all_titles_label.configure(text=f"All Titles: {len(comics_to_display)}")
+        else:
+            # Add a title frame
+            self.title_frame = tk.Frame(self.details_frame, bg="#2C2C2C")
+
+            all_titles_label = tk.Label(
+                self.title_frame,
+                text=f"All Titles: {len(comics_to_display)}",
+                font=("TkDefaultFont", 14),
+                fg="#F5F5F5",
+                bg="#2C2C2C",
+                anchor="w"
+            )
+            all_titles_label.pack(side="left", padx=5, pady=5)
+            self.title_frame.pack(fill="x", padx=10, pady=10)
+
+        # Display the comics
+        for i, comic in enumerate(self.comics):
+            style = ttk.Style()
+            style.configure('ComicFrame.TFrame', background='#2C2C2C')
+            comic_frame = ttk.Frame(
+                self.scrollable_frame, 
+                borderwidth=1, 
+                relief="solid", 
+                style="ComicFrame.TFrame",
+                width=220)
+            
+            comic_frame.grid(row=i // max_columns, column=i % max_columns, padx=padding, pady=padding, sticky="nsew")
+            comic_frame.grid_propagate(False)
+            
+
+            title_label = ttk.Label(
+                comic_frame, 
+                text=comic[0], 
+                wraplength=300, 
+                justify="center", 
+                foreground="white", 
+                background="#2C2C2C", 
+                font=("Comic Sans MS", 16)
+                )
+            title_label.pack(padx=padding, pady=padding)
+
+            # Load and display the cover image
+            cover_img = Image.open(requests.get(comic[8], stream=True).raw)
+            cover_img.thumbnail((100, 200))
+            cover_img = ImageTk.PhotoImage(cover_img)
+
+            cover_label = tk.Label(
+                comic_frame,
+                image=cover_img,
+                bg="#2C2C2C"
+            )
+            cover_label.image = cover_img
+            cover_label.pack(side="left", padx=(10, 20), pady=5)
+
+            # Create a new frame for the labels on the right side of the cover image
+            details_frame = ttk.Frame(comic_frame, style='ComicFrame.TFrame')
+            details_frame.pack(side="left", fill="both", expand=True)
+
+            # Bind the click event to the cover_label
+            cover_label.bind("<Button-1>", lambda e, comic=comic: self.show_details(comic))
+            cover_label.bind("<Enter>", lambda e: e.widget.config(cursor="hand2"))
+
+            # Display comic details
+            author_label = tk.Label(
+                details_frame,
+                text=f"Author: {comic[1]}",
+                font=("Comic Sans MS", 10),
+                fg="#F5F5F5",
+                bg="#2C2C2C",
+                anchor="w",
+                wraplength=220,
+                justify="left"
+            )
+            author_label.pack(anchor="w")
+
+            artist_label = tk.Label(
+                details_frame,
+                text=f"Artist: {comic[2]}",
+                font=("Comic Sans MS", 10),
+                fg="#F5F5F5",
+                bg="#2C2C2C",
+                anchor="w",
+                wraplength=220,
+                justify="left"
+            )
+            artist_label.pack(anchor="w")
+
+            genre_label = tk.Label(
+                details_frame,
+                text=f"Genre: {comic[5]}",
+                font=("Comic Sans MS", 10),
+                fg="#F5F5F5",
+                bg="#2C2C2C",
+                anchor="w",
+                wraplength=220,
+                justify="left"
+            )
+            genre_label.pack(anchor="w")
+            
+            # Display "Language:" text
+            language_text_label = tk.Label(
+                details_frame,
+                text="Language:",
+                font=("Comic Sans MS", 10),
+                fg="#F5F5F5",
+                bg="#2C2C2C",
+                anchor="w",
+                wraplength=220,
+                justify="left"
+            )
+            language_text_label.pack(side="left", pady=5)  # Adjust the pady value to set the vertical gap
+
+            # Load and display the flag image for the language
+            flag_img = Image.open(requests.get(comic[9], stream=True).raw)
+            flag_img.thumbnail((20, 10))
+            flag_img = ImageTk.PhotoImage(flag_img)
+
+            language_flag_label = tk.Label(
+                details_frame,
+                image=flag_img,
+                bg="#2C2C2C",
+                anchor="w",
+                justify="left"
+            )
+            language_flag_label.image = flag_img
+            language_flag_label.pack(side="left", pady=5)  # Adjust the pady value to set the vertical gap
+
+            
+        for i in range(max_columns):
+            self.scrollable_frame.columnconfigure(i, weight=1)
 
     def _on_mouse_wheel(self, event):
-        self.canvas.yview_scroll(-1 * int(event.delta / 120), "units")
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     def search_comic(self, search_query):
         search_query = search_query.lower()
         search_results = [comic for comic in self.comics if search_query in comic["title"].lower()]
         self.display_comics(search_results)
+        
+    def show_details(self, comic):
+        if self.show_details_callback:
+            self.show_details_callback(comic)
+            

@@ -1,9 +1,12 @@
 import tkinter as tk
+from register import Register
+from forget_password import ForgetPassword
 
 class UserMenu:
     def __init__(self, window):
         self.window = window
         self.logged_in = False
+        self.update_user_icon_callback = None
 
     def show_user_menu(self, event):
         self.user_menu_window = tk.Toplevel(self.window)
@@ -69,19 +72,22 @@ class UserMenu:
         # You can add more logic here to handle actual user authentication
         self.logged_in = True
         print("Logged in")
+        if self.update_user_icon_callback:  # Check if the callback is assigned
+            self.update_user_icon_callback()  # Call the callback function
         self.user_menu_window.destroy()
 
     def signup(self):
         print("Sign up")
 
-    def sidebar_action(self, button_text):
-        print(f"Clicked {button_text}")
+    # def sidebar_action(self, button_text):
+    #     print(f"Clicked {button_text}")
         
     def forget_password(self):
-        print("Forget password")
+        forget_password = ForgetPassword(self.user_menu_window)
+        forget_password.show_forget_password_window()
 
     def register(self):
-        print("Register")
+        Register(self.user_menu_window)
         
     def is_logged_in(self):
         return self.logged_in
