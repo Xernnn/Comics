@@ -85,7 +85,6 @@ class ComicDetails(tk.Toplevel):
             (f"Publisher: {self.comic[3]}", 12),
             (f"Publish Date: {self.comic[4]}", 12),
             (f"Genre: {self.comic[5]}", 12),
-            # (f"Language: {self.comic[9]}", 12),
             (f"Synopsis: {self.comic[10]}", 12)
         ]
 
