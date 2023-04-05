@@ -11,8 +11,7 @@ CREATE TABLE users (
     )
 );
 select * from users;
-INSERT INTO users(username, password, avatar, gmail, role) VALUES('anminhtri', 'burhlmao', 'o', 'tri@gmail.com', 'admin') ;
-drop table users;
+-- drop table users;
 
 CREATE TABLE comics (
 	title varchar(255),
@@ -31,7 +30,7 @@ CREATE TABLE comics (
     )
 );
 select * from comics;
-drop table comics;
+-- drop table comics;
 
 CREATE TABLE sort (
 	order_by varchar(255),
@@ -40,5 +39,5 @@ CREATE TABLE sort (
     )
 );
 select * from sort;
-delete from sort;
-drop table sort;
+-- delete from sort;
+-- drop table sort;
