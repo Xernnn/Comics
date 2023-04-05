@@ -1,6 +1,6 @@
 # Comic Information Management System
 
-![Sample](https://github.com/Xernnn/Comics/blob/main/images/sample.jpg)
+![Sample](https://github.com/Xernnn/Comics/blob/main/images/sample.png)
 ## Group 12 (Group 5 DS) Advance Programming with Python midterm project
 - BI12-389 Nguyen Son 
 - BI12-447 An Minh Tri
