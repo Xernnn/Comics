@@ -24,8 +24,8 @@ class Header(tk.Frame):
 
     def create_header(self):
         bg_color = "#1A1918"
-        self.config(bg=bg_color)  # Set the background color of the Header
-        self.pack(fill=tk.X)  # Remove pady and padx here
+        self.config(bg=bg_color)  
+        self.pack(fill=tk.X) 
         self.header_frame = tk.Frame(
             self,
             bg="#2C2C2C",
@@ -144,7 +144,7 @@ class Header(tk.Frame):
             messagebox.showerror("Error", "Please enter a search term.")
 
     def search(self, option, where):
-        # where = f"%{where}%"
+        where = f"%{where}%"
         where = (where,)
         if option == "All":
             cursor.execute("SELECT * from comics WHERE title LIKE %s OR author LIKE %s OR artist LIKE %s OR series LIKE %s", where * 4)
@@ -184,7 +184,6 @@ class Header(tk.Frame):
 
     def update_content(self, results):
         print(f"Updating content with results: {results}")
-        # Clear the content area before displaying new search results
         for widget in self.winfo_children():
             widget.destroy()
 
@@ -216,7 +215,7 @@ class Header(tk.Frame):
             comic_frame.grid(row=row, column=column, padx=padding, pady=padding, sticky="nsew")
             comic_frame.grid_propagate(False)
 
-            title_label = ttk.Label(comic_frame, text=result[1], wraplength=300, justify="center", foreground="white", background="#2C2C2C", font=("Comic Sans MS", 16))
+            title_label = ttk.Label(comic_frame, text=result[0], wraplength=300, justify="center", foreground="white", background="#2C2C2C", font=("Comic Sans MS", 16))
             title_label.pack(padx=padding, pady=padding)
 
             # Load and display the cover image
