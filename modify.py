@@ -94,7 +94,7 @@ class ModifySubMenu:
             label_widget = tk.Label(add_window, text=label, anchor="w")
             label_widget.grid(row=index, column=0, padx=(10, 0), pady=(10, 0), sticky="w")
 
-            entry_widget = tk.Entry(add_window, width=40)  # Change the width of the Entry widget
+            entry_widget = tk.Entry(add_window, width=40) 
             entry_widget.grid(row=index, column=1, padx=(10, 0), pady=(10, 0), sticky="w")
             entries.append(entry_widget)
 
@@ -115,7 +115,7 @@ class ModifySubMenu:
     def delete_comic(self):
         delete_window = tk.Toplevel(self.parent_frame)
         delete_window.title("Delete Comic")
-        delete_window.geometry("400x100")
+        delete_window.geometry("350x100")
 
         title_label = tk.Label(delete_window, text="Title", anchor="w")
         title_label.grid(row=0, column=0, padx=(10, 0), pady=(10, 0), sticky="w")
@@ -139,13 +139,13 @@ class ModifySubMenu:
     def update_comic(self):
         update_window = tk.Toplevel(self.parent_frame)
         update_window.title("Update Comic")
-        update_window.geometry("400x100")
+        update_window.geometry("350x100")
 
         title_label = tk.Label(update_window, text="Title", anchor="w")
         title_label.grid(row=0, column=0, padx=(10, 0), pady=(10, 0), sticky="w")
 
-        title_entry = tk.Entry(update_window, width=40)  # Change the width of the Entry widget
-        title_entry.grid(row=0, column=1, padx=(10, 20), pady=(10, 0), sticky="w")  # Add gap between the label and textbox
+        title_entry = tk.Entry(update_window, width=40)  
+        title_entry.grid(row=0, column=1, padx=(10, 20), pady=(10, 0), sticky="w")  
 
         submit_button = tk.Button(update_window, text="Submit", command=lambda: self.fetch_comic_details(update_window, title_entry.get()))
         submit_button.grid(row=1, column=1, pady=(10, 0))
@@ -167,20 +167,24 @@ class ModifySubMenu:
     def display_update_form(self, original_title, comic_data):
         update_form = tk.Toplevel(self.parent_frame)
         update_form.title("Update Comic")
-        update_form.geometry("400x350")
+        update_form.geometry("400x400")
 
         labels = ["Title", "Author", "Artist", "Publisher", "Publish Date", "Genre", "Volume", "Series", "Cover Image", "Language", "Synopsis"]
         entries = []
 
         for index, label in enumerate(labels):
-            tk.Label(update_form, text=label).grid(row=index, column=0, padx=(10, 0), pady=(10, 0))
-            entry = tk.Entry(update_form)
-            entry.insert(0, comic_data[index])
-            entry.grid(row=index, column=1, padx=(0, 10), pady=(10, 0))
-            entries.append(entry)
+            label_widget = tk.Label(update_form, text=label, anchor="w")
+            label_widget.grid(row=index, column=0, padx=(10, 0), pady=(10, 0), sticky="w")
 
-        submit_button = ttk.Button(update_form, text="Update", command=lambda: self.update_in_database(update_form, original_title, [entry.get() for entry in entries]))
+            entry_widget = tk.Entry(update_form, width=40)
+            entry_widget.insert(0, comic_data[index])
+            entry_widget.grid(row=index, column=1, padx=(10, 0), pady=(10, 0), sticky="w")
+            entries.append(entry_widget)
+
+        submit_button = tk.Button(update_form, text="Update", command=lambda: self.update_in_database(update_form, original_title, [entry.get() for entry in entries]))
         submit_button.grid(row=len(labels), column=1, pady=(10, 0))
+
+        update_form.bind('<Return>', lambda event: self.update_in_database(update_form, original_title, [entry.get() for entry in entries]))
 
     def update_in_database(self, window, original_title, new_comic_data):
         new_comic_data.append(original_title)
