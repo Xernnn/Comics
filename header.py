@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
-import os
 from user_menu import UserMenu
 from user_info import UserInfo
 import mysql.connector as sql
