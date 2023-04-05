@@ -88,6 +88,7 @@ class Header(tk.Frame):
 
         filter_options = [
             "All",
+            "All",
             "Title",
             "Author",
             "Artist",
@@ -144,7 +145,7 @@ class Header(tk.Frame):
             messagebox.showerror("Error", "Please enter a search term.")
 
     def search(self, option, where):
-        # where = f"%{where}%"
+        where = f"%{where}%"
         where = (where,)
         if option == "All":
             cursor.execute("SELECT * from comics WHERE title LIKE %s OR author LIKE %s OR artist LIKE %s OR series LIKE %s", where * 4)

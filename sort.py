@@ -80,9 +80,10 @@ class SortSubMenu:
         elif text == "Sort by Title (Z-A)":
             self.order_by = "title DESC"
         elif text == "Sort by Newest":
-            self.order_by = "release_date DESC"
+            self.order_by = "public_date DESC"
         elif text == "Sort by Oldest":
-            self.order_by = "release_date ASC"
-
+            self.order_by = "public_date ASC"
+        order_by = (self.order_by,)
+        cursor.execute("INSERT INTO sort(order_by)  VALUES(%s)", order_by)
         # Call the sort_and_update_content function
         self.action_callback(self.order_by)
