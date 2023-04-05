@@ -3,14 +3,16 @@ use comics;
 CREATE TABLE users (
 	username varchar(255),
     password varchar (255),
-    priority varchar (255),
+    avatar text,
+    gmail varchar(255),
+    role varchar (255),
     PRIMARY KEY (
         username
     )
 );
 select * from users;
-INSERT INTO users(username, password, priority) VALUES('tri','an','admin');
-DELETE FROM users WHERE username='tri';
+INSERT INTO users(username, password, avatar, gmail, role) VALUES('anminhtri', 'burhlmao', 'o', 'tri@gmail.com', 'admin') ;
+drop table users;
 
 CREATE TABLE comics (
 	title varchar(255),
@@ -18,15 +20,25 @@ CREATE TABLE comics (
     artist varchar(255),
     publisher varchar(255),
     public_date date,
-    genre varchar(1000),
+    genre varchar(255),
     volume int,
     series varchar(255),
-    cover_image varchar(255),
-    language varchar(255),
-    synopsis varchar(1000),
+    cover_image text,
+    language varchar(255), 
+    synopsis text,
     PRIMARY KEY (
         title
     )
 );
 select * from comics;
 drop table comics;
+
+CREATE TABLE sort (
+	order_by varchar(255),
+    PRIMARY KEY (
+        order_by
+    )
+);
+select * from sort;
+delete from sort;
+drop table sort;

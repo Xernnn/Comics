@@ -34,7 +34,15 @@ class Content(tk.Frame):
         self.create_content()
 
         # Generate and display comics
-        self.comics = self.generate_comics(50)
+        cursor.execute("select * from sort")
+        temp = cursor.fetchall() 
+        if len(temp) == 0:
+            order_by = "RAND()"
+        else: 
+            order_by = temp[0][0]
+            print(temp[0][0])
+        cursor.execute("delete from sort")
+        self.comics = self.generate_comics(order_by)
         self.display_comics(self.comics)
 
     def filter_comics(self, comic, search_query):
@@ -82,10 +90,9 @@ class Content(tk.Frame):
         
         self.sort_menu = SortSubMenu(self.scrollable_frame, self, 0, 20, 1, ("TkDefaultFont", 12), (10, 5), self.sort_and_update_content)
 
-    def generate_comics(self, num_comics, order_by=None):
+    def generate_comics(self, order_by):            
         query = "SELECT * from comics"
-        if order_by:
-            query += f" ORDER BY {order_by}"
+        query += f" ORDER BY {order_by}"
         cursor.execute(query)
         comics = cursor.fetchall()
         comics = list(comics)
