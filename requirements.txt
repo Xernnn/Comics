@@ -1,0 +1,20 @@
+# Usage: pip install -r requirements.txt
+
+# Connect to MySQL
+mysql-connector-python
+
+# GUI base tkinter
+tk
+
+# PIL to process images
+Pillow
+
+# Requests to import web URLs
+requests
+
+# Random to randomize things
+random
+
+# Lorem ipsum dolor sit amet, consectetur adip... 
+# (Create random meaningless words)
+lorem-text
