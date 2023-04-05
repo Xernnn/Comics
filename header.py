@@ -88,6 +88,7 @@ class Header(tk.Frame):
 
         filter_options = [
             "All",
+            "All",
             "Title",
             "Author",
             "Artist",
