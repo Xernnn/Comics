@@ -6,7 +6,6 @@ import os
 import mysql.connector as sql
 from sort import SortSubMenu
 
-
 db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
 cursor = db.cursor(buffered=True)
 
