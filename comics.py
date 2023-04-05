@@ -4,6 +4,42 @@ from PIL import Image, ImageTk
 import requests
 from content import Content
 
+language_flags = {
+    "English": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Flag_of_Great_Britain_%281707%E2%80%931800%29.svg/2560px-Flag_of_Great_Britain_%281707%E2%80%931800%29.svg.png",
+    "Chinese": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Flag_of_the_People%27s_Republic_of_China.svg/1280px-Flag_of_the_People%27s_Republic_of_China.svg.png",
+    "French": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Flag_of_France_%28lighter_variant%29.svg/1280px-Flag_of_France_%28lighter_variant%29.svg.png",
+    "Italian": "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/1280px-Flag_of_Italy.svg.png",
+    "Japanese": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9e/Flag_of_Japan.svg/1280px-Flag_of_Japan.svg.png",
+    "Korean": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/1280px-Flag_of_South_Korea.svg.png",
+    "Spanish": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/750px-Bandera_de_Espa%C3%B1a.svg.png",
+    "Vietnamese": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1280px-Flag_of_Vietnam.svg.png"
+}
+
+class ComicBox(tk.Frame):
+    def __init__(self, master, comic):
+        super().__init__(master, bg="#2C2C2C")
+        self.comic = comic
+        self.create_widgets()
+
+    def create_widgets(self):
+        cover_img = Image.open(requests.get(self.comic[8], stream=True).raw)
+        cover_img.thumbnail((300, 600))
+        cover_img = ImageTk.PhotoImage(cover_img)
+
+        cover_button = tk.Button(
+            self,
+            image=cover_img,
+            bg="#2C2C2C",
+            borderwidth=0,
+            highlightthickness=0,
+            command=self.show_details
+        )
+        cover_button.image = cover_img
+        cover_button.pack(padx=20, pady=20)
+
+    def show_details(self):
+        ComicDetails(self.master, self.comic)
+
 class ComicDetails(tk.Toplevel):
     def __init__(self, master, comic):
         super().__init__(master)
@@ -81,9 +117,13 @@ class ComicDetails(tk.Toplevel):
         language_text_label.pack(side="left")
 
         # Load and display the flag image for the language
-        flag_img = Image.open(requests.get(self.comic[9], stream=True).raw)
-        flag_img.thumbnail((30, 15))
-        flag_img = ImageTk.PhotoImage(flag_img)
+        flag_url = language_flags.get(self.comic[9])
+        if flag_url:
+            flag_img = Image.open(requests.get(flag_url, stream=True).raw)
+            flag_img.thumbnail((30, 15))
+            flag_img = ImageTk.PhotoImage(flag_img)
+        else:
+            flag_img = None
 
         language_flag_label = tk.Label(
             language_frame,

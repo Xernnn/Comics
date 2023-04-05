@@ -43,18 +43,18 @@ def update(where, comic_data):
         issue_number=%s, series=%s, cover_image=%s, language=%s, synopsis=%s 
         WHERE title=%s """,comic_data)
 
-# # SEARCH comic
-# def search(option, where):
-#     where = (where,)
-#     match option:
-#         case 1:
-#             cursor.execute("SELECT * from comics WHERE title = %s", where)
-#         case 2:
-#             cursor.execute("SELECT * from comics WHERE author = %s", where)
-#         case 3:
-#             cursor.execute("SELECT * from comics WHERE artist = %s", where)
-#         case 4:
-#             cursor.execute("SELECT * from comics WHERE language = %s", where)    
+# SEARCH comic
+def search(option, where):
+    where = (where,)
+    match option:
+        case 1:
+            cursor.execute("SELECT * from comics WHERE title = %s", where)
+        case 2:
+            cursor.execute("SELECT * from comics WHERE author = %s", where)
+        case 3:
+            cursor.execute("SELECT * from comics WHERE artist = %s", where)
+        case 4:
+            cursor.execute("SELECT * from comics WHERE language = %s", where)    
 
 # MAIN FUNCTION
 while 1:

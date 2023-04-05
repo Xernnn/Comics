@@ -34,13 +34,13 @@ class Management(Header, UserMenu):
         self.left_menu = LeftMenu(self.details_frame)  # Create an instance of LeftMenu
 
         # Create the header object
-        header = Header(self.header_frame, self.go_to_homepage, self.search_comic, self.sidebar.toggle_left_menu, user_menu, user_info)
+        self.header = Header(self.header_frame, self.go_to_homepage, self.search_comic, self.sidebar.toggle_left_menu, user_menu, user_info)
 
         # Assign the callback function after creating header
-        user_menu.update_user_icon_callback = header.update_user_icon
+        user_menu.update_user_icon_callback = self.header.update_user_icon
 
         # Pack header
-        header.pack(side=tk.TOP, fill=tk.X)
+        self.header.pack(side=tk.TOP, fill=tk.X)
 
         # Create the content
         content_frame = ttk.Frame(root, style='ContentFrame.TFrame')
@@ -59,8 +59,16 @@ class Management(Header, UserMenu):
         
     def search_comic(self, search_query):
         print(f"Searching for: {search_query}")
-        
+        results = self.header.search("All", search_query)
+        self.content.search_and_update_content(results)
+
     def show_details(self, comic):
         from comics import ComicDetails
         ComicDetails(self.window, comic)
+        
+    def search_callback(self, search_query):
+        results = self.header.search(1, search_query)
+        self.content.search_and_update_content(results)
+        
+
 

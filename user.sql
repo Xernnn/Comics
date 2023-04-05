@@ -17,13 +17,13 @@ CREATE TABLE comics (
     author varchar(255),
     artist varchar(255),
     publisher varchar(255),
-    public_date int,
-    genre varchar(255),
-    issue_number int,
+    public_date date,
+    genre varchar(1000),
+    volume int,
     series varchar(255),
     cover_image varchar(255),
     language varchar(255),
-    synopsis LONGTEXT,
+    synopsis varchar(1000),
     PRIMARY KEY (
         title
     )

@@ -7,7 +7,7 @@ db = sql.connect(host="localhost",user="root",password="root",database="comics",
 cursor = db.cursor(buffered=True)
 
 class ModifySubMenu:
-    def __init__(self, parent_frame, index, button_width, button_height, button_font, button_padding, action_callback):
+    def __init__(self, parent_frame, content_obj, index, button_width, button_height, button_font, button_padding, action_callback):
         self.parent_frame = parent_frame
         self.index = index
         self.button_width = button_width
@@ -15,6 +15,7 @@ class ModifySubMenu:
         self.button_font = button_font
         self.button_padding = button_padding
         self.action_callback = action_callback
+        self.content_obj = content_obj
 
         self.create_submenu()
 
@@ -86,7 +87,7 @@ class ModifySubMenu:
         add_window.title("Add Comic")
         add_window.geometry("400x400")
 
-        labels = ["Title", "Author", "Artist", "Publisher", "Publish Date", "Genre", "Issue Number", "Series", "Cover Image URL", "Language", "Synopsis"]
+        labels = ["Title", "Author", "Artist", "Publisher", "Publish Date", "Genre", "Volume", "Series", "Cover Image URL", "Language", "Synopsis"]
         entries = []
 
         for index, label in enumerate(labels):
@@ -106,7 +107,7 @@ class ModifySubMenu:
         comic_data = tuple(entry.get() for entry in entries)
         cursor.execute("""INSERT INTO comics(
             title, author, artist, publisher, public_date, genre,
-            issue_number, series, cover_image, language, synopsis)
+            volume, series, cover_image, language, synopsis)
             VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", comic_data)
         print("Comic", comic_data[0], "has been added")
         window.destroy()
@@ -168,7 +169,7 @@ class ModifySubMenu:
         update_form.title("Update Comic")
         update_form.geometry("400x350")
 
-        labels = ["Title", "Author", "Artist", "Publisher", "Publish Date", "Genre", "Issue Number", "Series", "Cover Image", "Language", "Synopsis"]
+        labels = ["Title", "Author", "Artist", "Publisher", "Publish Date", "Genre", "Volume", "Series", "Cover Image", "Language", "Synopsis"]
         entries = []
 
         for index, label in enumerate(labels):
@@ -187,7 +188,7 @@ class ModifySubMenu:
 
         cursor.execute("""UPDATE comics
             SET title=%s, author=%s, artist=%s, publisher=%s, public_date=%s, genre=%s, 
-            issue_number=%s, series=%s, cover_image=%s, language=%s, synopsis=%s 
+            volume=%s, series=%s, cover_image=%s, language=%s, synopsis=%s 
             WHERE title=%s """, updated_data_tuple)
 
         print("Comic", original_title, "has been updated")
@@ -201,10 +202,10 @@ class ModifySubMenu:
         publisher = input(str("publisher: "))
         public_date = input(str("publisher_date: "))
         genre = input(str("genre: "))
-        issue_number = input(str("issue_number: "))
+        volume = input(str("volume: "))
         series = input(str("series: "))
         cover_image = input(str("cover_image: "))
         language = input(str("language: "))
         synopsis = input(str("synopsis: "))
-        comic_data = (title, author, artist, publisher, public_date, genre, issue_number, series, cover_image, language, synopsis)
+        comic_data = (title, author, artist, publisher, public_date, genre, volume, series, cover_image, language, synopsis)
         return comic_data

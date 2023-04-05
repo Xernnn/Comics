@@ -30,7 +30,6 @@ class LeftMenu:
         self.create_button_frame(x=0, y=66, width=250, height=1000)
         self.hide_left_menu()
 
-
     def create_button_frame(self, x, y, width, height):
         button_frame = tk.Frame(
             self.details_frame,
@@ -52,9 +51,8 @@ class LeftMenu:
         submenus = {}
         for index, (main_label, submenu_class) in enumerate(submenu_classes.items()):
             action_callback = self.sort_callback if main_label == "Sort" else self.modify_callback
-            submenu = submenu_class(button_frame, index, button_width, button_height, button_font, button_padding, action_callback)
+            submenu = submenu_class(button_frame, self.content, index, button_width, button_height, button_font, button_padding, action_callback)
             submenus[main_label] = submenu
-
 
         self.submenus = submenus
         self.left_menu_frame = button_frame  # Assign the button_frame to self.left_menu_frame

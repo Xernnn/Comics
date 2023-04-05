@@ -4,23 +4,55 @@ from PIL import Image, ImageTk
 import requests
 import os
 import mysql.connector as sql
+from sort import SortSubMenu
 
 
 db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
 cursor = db.cursor(buffered=True)
 
+language_flags = {
+    "English": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Flag_of_Great_Britain_%281707%E2%80%931800%29.svg/2560px-Flag_of_Great_Britain_%281707%E2%80%931800%29.svg.png",
+    "Chinese": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Flag_of_the_People%27s_Republic_of_China.svg/1280px-Flag_of_the_People%27s_Republic_of_China.svg.png",
+    "French": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Flag_of_France_%28lighter_variant%29.svg/1280px-Flag_of_France_%28lighter_variant%29.svg.png",
+    "Italian": "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/1280px-Flag_of_Italy.svg.png",
+    "Japanese": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9e/Flag_of_Japan.svg/1280px-Flag_of_Japan.svg.png",
+    "Korean": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/1280px-Flag_of_South_Korea.svg.png",
+    "Spanish": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/750px-Bandera_de_Espa%C3%B1a.svg.png",
+    "Vietnamese": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1280px-Flag_of_Vietnam.svg.png"
+}
+
 class Content(tk.Frame):
     def __init__(self, details_frame, show_details_callback=None):
         super().__init__(details_frame)
         self.details_frame = details_frame
+        # self.content_area = tk.Frame(...)
         self.comics = []
         self.show_details_callback = show_details_callback
+        self.title_frame = None
 
         # Set up the content frame
         self.create_content()
 
         # Generate and display comics
         self.comics = self.generate_comics(50)
+        self.display_comics(self.comics)
+
+    def filter_comics(self, comic, search_query):
+        # Check if any of the comic's attributes contain the search_query
+        for attribute in comic:
+            if search_query in str(attribute).lower():
+                return True
+        return False
+
+    def clear_content(self):
+        # Clear the content by setting the comics list to an empty list
+        self.comics = []
+
+    def add_content(self, new_content):
+        # Add new_content to the comics list
+        self.comics = new_content
+
+        # Update the display
         self.display_comics(self.comics)
 
     def create_content(self):
@@ -47,14 +79,18 @@ class Content(tk.Frame):
         # Bind mouse wheel scrolling
         self.scrollable_frame.bind("<Enter>", lambda _: self.scrollable_frame.focus_set())
         self.scrollable_frame.bind("<MouseWheel>", self._on_mouse_wheel)
+        
+        self.sort_menu = SortSubMenu(self.scrollable_frame, self, 0, 20, 1, ("TkDefaultFont", 12), (10, 5), self.sort_and_update_content)
 
-    def generate_comics(self, num_comics):
-        cursor.execute("SELECT * from comics")
+    def generate_comics(self, num_comics, order_by=None):
+        query = "SELECT * from comics"
+        if order_by:
+            query += f" ORDER BY {order_by}"
+        cursor.execute(query)
         comics = cursor.fetchall()
         comics = list(comics)
         return comics
-        
-        
+
     def display_comics(self, comics_to_display):
         from comics import ComicDetails
 
@@ -66,7 +102,7 @@ class Content(tk.Frame):
             child.destroy()
 
         # Update the "All Titles" label text
-        if hasattr(self, 'title_frame'):
+        if self.title_frame is not None:
             all_titles_label = self.title_frame.winfo_children()[0]
             all_titles_label.configure(text=f"All Titles: {len(comics_to_display)}")
         else:
@@ -182,9 +218,13 @@ class Content(tk.Frame):
             language_text_label.pack(side="left", pady=5)  # Adjust the pady value to set the vertical gap
 
             # Load and display the flag image for the language
-            flag_img = Image.open(requests.get(comic[9], stream=True).raw)
-            flag_img.thumbnail((20, 10))
-            flag_img = ImageTk.PhotoImage(flag_img)
+            flag_url = language_flags.get(comic[9])  # Replace 'comic[9]' with the appropriate language column index
+            if flag_url:
+                flag_img = Image.open(requests.get(flag_url, stream=True).raw)
+                flag_img.thumbnail((20, 10))
+                flag_img = ImageTk.PhotoImage(flag_img)
+            else:
+                flag_img = None
 
             language_flag_label = tk.Label(
                 details_frame,
@@ -193,7 +233,8 @@ class Content(tk.Frame):
                 anchor="w",
                 justify="left"
             )
-            language_flag_label.image = flag_img
+            if flag_img:
+                language_flag_label.image = flag_img
             language_flag_label.pack(side="left", pady=5)  # Adjust the pady value to set the vertical gap
 
             
@@ -204,11 +245,47 @@ class Content(tk.Frame):
         self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     def search_comic(self, search_query):
-        search_query = search_query.lower()
-        search_results = [comic for comic in self.comics if search_query in comic["title"].lower()]
+        search_results = [comic for comic in self.comics if self.filter_comics(comic, search_query)]
         self.display_comics(search_results)
-        
+
     def show_details(self, comic):
         if self.show_details_callback:
             self.show_details_callback(comic)
-            
+
+    def search_and_update_content(self, search_query):
+        search_query = search_query.lower()
+        search_results = [comic for comic in self.comics if self.filter_comics(comic, search_query)]
+        self.display_comics(search_results)
+
+    def sort_and_update_content(self, order_by):
+        # Check the order type (ascending or descending)
+        if order_by == "title_desc":
+            order_by = "title DESC"
+        elif order_by == "release_date_asc":
+            order_by = "release_date"
+
+        # Fetch the sorted data from the database
+        cursor.execute(f"SELECT * FROM comics ORDER BY {order_by}")
+        print(f"SELECT * FROM comics ORDER BY {order_by}")
+        sorted_data = cursor.fetchall()
+
+        # Show the sorted data in a pop-up window
+        self.show_sort_results(sorted_data)
+
+        # Update the content with the sorted data
+        self.clear_content()
+        self.add_content(sorted_data)
+
+    def show_sort_results(self, sorted_data):
+        sort_window = tk.Toplevel(self)
+        sort_window.title("Sorted Results")
+
+        sort_results_listbox = tk.Listbox(sort_window, width=100, height=20)
+        sort_results_listbox.pack(padx=10, pady=10)
+
+        for comic in sorted_data:
+            sort_results_listbox.insert(tk.END, comic[0])  # Assuming comic[0] is the title of the comic
+
+        close_button = tk.Button(sort_window, text="Close", command=sort_window.destroy)
+        close_button.pack(pady=10)
+

@@ -6,19 +6,21 @@ db = sql.connect(host="localhost",user="root",password="root",database="comics",
 cursor = db.cursor(buffered=True)
 
 class SortSubMenu:
-    def __init__(self, parent_frame, index, button_width, button_height, button_font, button_padding, action_callback):
+    def __init__(self, parent_frame, content_obj, index, button_width, button_height, button_font, button_padding, action_callback):
         self.parent_frame = parent_frame
+        self.content_obj = content_obj
         self.index = index
         self.button_width = button_width
         self.button_height = button_height
         self.button_font = button_font
         self.button_padding = button_padding
         self.action_callback = action_callback
+        self.sort_options = ["Sort by Title (A-Z)", "Sort by Title (Z-A)", "Sort by Newest", "Sort by Oldest"]
 
         self.create_submenu()
 
     def create_submenu(self):
-        submenu_texts = ["Sort by Title (A-Z)", "Sort by Release", "Sort by Rating", "Sort by Views"]
+        submenu_texts = self.sort_options
 
         submenu_frame = tk.Frame(self.parent_frame, bg="#1A1918")
         submenu_frame.grid(row=self.index * 5, column=0, padx=10, pady=(self.button_padding[0] if self.index == 0 else self.button_padding[1]))
@@ -28,7 +30,7 @@ class SortSubMenu:
             text="Sort",
             width=self.button_width,
             height=self.button_height,
-            font=(self.button_font[0], self.button_font[1], "bold"),  # Add the "bold" attribute
+            font=(self.button_font[0], self.button_font[1], "bold"),
             bg="#1A1918",
             fg="#F5F5F5",
             cursor="hand2",
@@ -51,7 +53,9 @@ class SortSubMenu:
                 cursor="hand2",
                 anchor="w"
             )
-            sub_button.grid(row=sub_index + 1, column=0, sticky="w")
+            sub_button.grid_row = sub_index + 1
+            sub_button.grid_column = 0
+            sub_button.grid(row=sub_button.grid_row, column=sub_button.grid_column, sticky="w")
             sub_button.bind("<Button-1>", lambda e, t=sub_label: self.sort_action(t))
             sub_button.bind("<Enter>", lambda e, b=sub_button: b.configure(bg="#3C3C3C", fg="#FFFFFF"))
             sub_button.bind("<Leave>", lambda e, b=sub_button: b.configure(bg="#1A1918", fg="#F5F5F5"))
@@ -63,22 +67,22 @@ class SortSubMenu:
 
     def toggle_submenu(self):
         any_visible = any(button.winfo_viewable() for button in self.buttons[1:])
-        
         for button in self.buttons[1:]:
             if any_visible:
                 button.grid_remove()
             else:
-                button.grid()
+                button.grid(row=button.grid_row, column=button.grid_column, sticky="w")
 
-                
-    def sort_action(self, button_text):
-        if button_text == "Sort by Title (A-Z)":
-            print("Sorted by Title")
-        elif button_text == "Sort by Release":
-            print("Sorted by Release")
-        elif button_text == "Sort by Rating":
-            print("Sorted by Rating")
-        elif button_text == "Sort by Views":
-            print("Sorted by Views")
-        else:
-            return  # Do nothing if it's not a sorting button
+    def sort_action(self, text):
+        print("Sort action:", text)
+        if text == "Sort by Title (A-Z)":
+            self.order_by = "title ASC"
+        elif text == "Sort by Title (Z-A)":
+            self.order_by = "title DESC"
+        elif text == "Sort by Newest":
+            self.order_by = "release_date DESC"
+        elif text == "Sort by Oldest":
+            self.order_by = "release_date ASC"
+
+        # Call the sort_and_update_content function
+        self.action_callback(self.order_by)
