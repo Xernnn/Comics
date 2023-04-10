@@ -2,23 +2,12 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
 import requests
-import os
 import mysql.connector as sql
 from sort import SortSubMenu
+import os 
 
 db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
 cursor = db.cursor(buffered=True)
-
-language_flags = {
-    "English": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Flag_of_Great_Britain_%281707%E2%80%931800%29.svg/2560px-Flag_of_Great_Britain_%281707%E2%80%931800%29.svg.png",
-    "Chinese": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Flag_of_the_People%27s_Republic_of_China.svg/1280px-Flag_of_the_People%27s_Republic_of_China.svg.png",
-    "French": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Flag_of_France_%28lighter_variant%29.svg/1280px-Flag_of_France_%28lighter_variant%29.svg.png",
-    "Italian": "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/1280px-Flag_of_Italy.svg.png",
-    "Japanese": "https://upload.wikimedia.org/wikipedia/en/thumb/9/9e/Flag_of_Japan.svg/1280px-Flag_of_Japan.svg.png",
-    "Korean": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/1280px-Flag_of_South_Korea.svg.png",
-    "Spanish": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Bandera_de_Espa%C3%B1a.svg/750px-Bandera_de_Espa%C3%B1a.svg.png",
-    "Vietnamese": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1280px-Flag_of_Vietnam.svg.png"
-}
 
 class Content(tk.Frame):
     def __init__(self, details_frame, show_details_callback=None):
@@ -36,7 +25,7 @@ class Content(tk.Frame):
         cursor.execute("select * from sort")
         temp = cursor.fetchall() 
         if len(temp) == 0:
-            order_by = "RAND()"
+            order_by = "title ASC"
         else: 
             order_by = temp[0][0]
             print(temp[0][0])
@@ -131,15 +120,14 @@ class Content(tk.Frame):
             style = ttk.Style()
             style.configure('ComicFrame.TFrame', background='#2C2C2C')
             comic_frame = ttk.Frame(
-                self.scrollable_frame, 
-                borderwidth=1, 
-                relief="solid", 
+                self.scrollable_frame,
+                borderwidth=1,
+                relief="solid",
                 style="ComicFrame.TFrame",
                 width=220)
-            
+
             comic_frame.grid(row=i // max_columns, column=i % max_columns, padx=padding, pady=padding, sticky="nsew")
             comic_frame.grid_propagate(False)
-            
 
             title_label = ttk.Label(
                 comic_frame, 
@@ -224,12 +212,16 @@ class Content(tk.Frame):
             language_text_label.pack(side="left", pady=5)  # Adjust the pady value to set the vertical gap
 
             # Load and display the flag image for the language
-            flag_url = language_flags.get(comic[9])  # Replace 'comic[9]' with the appropriate language column index
-            if flag_url:
-                flag_img = Image.open(requests.get(flag_url, stream=True).raw)
+            language = comic[9]
+            flag_path = f"images/flags/{language}.png"
+            print(flag_path)
+            
+            try:
+                flag_img = Image.open(flag_path)
                 flag_img.thumbnail((20, 10))
                 flag_img = ImageTk.PhotoImage(flag_img)
-            else:
+            except FileNotFoundError:
+                print(language)
                 flag_img = None
 
             language_flag_label = tk.Label(
@@ -243,7 +235,6 @@ class Content(tk.Frame):
                 language_flag_label.image = flag_img
             language_flag_label.pack(side="left", pady=5)  # Adjust the pady value to set the vertical gap
 
-            
         for i in range(max_columns):
             self.scrollable_frame.columnconfigure(i, weight=1)
 
