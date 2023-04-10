@@ -30,7 +30,7 @@ CREATE TABLE comics (
     )
 );
 select * from comics;
--- drop table comics;
+drop table comics;
 
 CREATE TABLE sort (
 	order_by varchar(255),
