@@ -1,12 +1,14 @@
 # Comic Information Management System
 
-![Sample](https://github.com/Xernnn/Comics/blob/main/images/sample.png)
 ## Group 12 (Group 5 DS) Advance Programming with Python midterm project
 - BI12-389 Nguyen Son 
 - BI12-447 An Minh Tri
 - BI12-375 Nguyen Cong Quoc
 - BI12-357 Nguyen Duc Phuong
 - BI12-390 Vu Hung Son
+
+![Sample](https://github.com/Xernnn/Comics/blob/main/images/sample.png)
+
 
 ## Demo
 1. Git clone this project
