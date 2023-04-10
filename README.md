@@ -40,4 +40,8 @@ python main.py
 ## Inside the App Interface
 
 ## Example Dataset
+You can find example datasets of comics inside the [example datasets](https://github.com/Xernnn/Comics/tree/main/example%20datasets) folder.
 
+- The small dataset [comics(S).csv](https://github.com/Xernnn/Comics/blob/main/example%20datasets/comics(S).csv) including 10 different comics that you can easily import to test the project. 
+
+- The larger dataset [comics(L).csv](https://github.com/Xernnn/Comics/blob/main/example%20datasets/comics(L).csv) including 135 different comics.
