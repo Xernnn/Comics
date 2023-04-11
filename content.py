@@ -266,9 +266,6 @@ class Content(tk.Frame):
         print(f"SELECT * FROM comics ORDER BY {order_by}")
         sorted_data = cursor.fetchall()
 
-        # Show the sorted data in a pop-up window
-        self.show_sort_results(sorted_data)
-
         # Update the content with the sorted data
         self.clear_content()
         self.add_content(sorted_data)
