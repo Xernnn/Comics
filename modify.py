@@ -81,6 +81,7 @@ class ModifySubMenu:
             self.update_comic()
         else:
             return  # Do nothing if it's not a modify button
+        
 
     def add_comic(self):
         add_window = tk.Toplevel(self.parent_frame)
