@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.messagebox
-
+import user_queries
+import mysql.connector.errors
 
 class Register:
     def __init__(self, window):
@@ -75,7 +76,18 @@ class Register:
             self.password_entry.delete(0, tk.END)
             self.confirm_password_entry.delete(0, tk.END)
             return
-
+        try:
+            user_data = {
+                "username": self.username_entry.get(),
+                "password": self.password_entry.get(),
+                "gmail": self.email_entry.get()
+            }
+            user_queries.add(user_data)
+        except mysql.connector.errors.IntegrityError:
+            error_msg = "This username is already used by someone else."
+            tk.messagebox.showerror("Error", error_msg)
+            self.password_entry.delete(0, tk.END)
+            self.confirm_password_entry.delete(0, tk.END)
         # You can add more logic here to handle user registration
         print("User registered")
         self.register_window.destroy()
