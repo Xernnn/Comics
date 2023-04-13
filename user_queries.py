@@ -6,8 +6,8 @@ cursor = db.cursor(buffered=True)
 
 # ADD user
 def add(user_data):
-    cursor.execute("INSERT INTO users(username, password, avatar, gmail, role) VALUES(%s,%s,'https://imgur.com/a/OFOZMdx',%s,'user')",user_data)
-
+    values = tuple(user_data.values())
+    cursor.execute("INSERT INTO users(username, password, avatar, gmail, role) VALUES(%s,%s,'https://imgur.com/a/OFOZMdx',%s,'user')",values)
 # DELETE user
 def delete(username):
     del_username = (username,)
