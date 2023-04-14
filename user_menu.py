@@ -1,6 +1,8 @@
 import tkinter as tk
+import mysql.connector as sql
 from register import Register
 from forget_password import ForgetPassword
+
 
 class UserMenu:
     def __init__(self, window):
@@ -69,25 +71,53 @@ class UserMenu:
         self.register_button.grid(row=0, column=1, padx=(10, 0), pady=(0, 5))
 
     def login(self):
-        # You can add more logic here to handle actual user authentication
-        self.logged_in = True
-        print("Logged in")
-        if self.update_user_icon_callback:  # Check if the callback is assigned
-            self.update_user_icon_callback()  # Call the callback function
-        self.user_menu_window.destroy()
+        # Call the signin function with entered username and password
+        username = self.username_entry.get()
+        password = self.password_entry.get()
+        success = self.signin(username, password)
+
+        if success != False:
+            self.logged_in = True
+            print("Logged in")
+            if self.update_user_icon_callback:  # Check if the callback is assigned
+                self.update_user_icon_callback()  # Call the callback function
+            self.user_menu_window.destroy()
+        else:
+            error_msg = "Invalid username or password."
+            tk.messagebox.showerror("Error", error_msg)
+            self.user_menu_window.destroy()
+            new_user_menu = UserMenu(self.window)
+            new_user_menu.show_user_menu(None)
+
 
     def signup(self):
         print("Sign up")
 
     # def sidebar_action(self, button_text):
     #     print(f"Clicked {button_text}")
-        
+
     def forget_password(self):
         forget_password = ForgetPassword(self.user_menu_window)
         forget_password.show_forget_password_window()
 
     def register(self):
         Register(self.user_menu_window)
-        
+
     def is_logged_in(self):
         return self.logged_in
+
+    def signin(self, username, password):
+        db = sql.connect(host="localhost", user="root", password="root", database="comics", port=3306, autocommit=True)
+        cursor = db.cursor(buffered=True)
+        data = (username, password)
+        cursor.execute("SELECT * from users WHERE username = %s and password = %s", data)
+        result = cursor.fetchone()
+
+        # Close the database connection
+        cursor.close()
+        db.close()
+
+        if result:
+            return result[0]  # Return the username
+        else:
+            return False
