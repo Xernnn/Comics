@@ -7,8 +7,9 @@ import mysql.connector as sql
 import tkinter.messagebox as messagebox
 import requests
 
-db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
+db = sql.connect(host="localhost", user="root", password="root", database="comics", port=3306, autocommit=True)
 cursor = db.cursor(buffered=True)
+
 
 class Header(tk.Frame):
     def __init__(self, parent, go_to_homepage_callback, search_callback, toggle_left_menu, user_menu, user_info):
@@ -23,8 +24,8 @@ class Header(tk.Frame):
 
     def create_header(self):
         bg_color = "#1A1918"
-        self.config(bg=bg_color)  
-        self.pack(fill=tk.X) 
+        self.config(bg=bg_color)
+        self.pack(fill=tk.X)
         self.header_frame = tk.Frame(
             self,
             bg="#2C2C2C",
@@ -73,12 +74,13 @@ class Header(tk.Frame):
             cursor="hand2",
             relief=tk.FLAT,
             bg="#2C2C2C",
-            command=self.go_to_homepage_callback 
+            command=self.go_to_homepage_callback
         )
         self.logo_button.pack(side=tk.LEFT, padx=(0, 20))
-        
+
         # Search box
-        self.search_box = tk.Entry(self.header_frame, width=25, font=("Times New Roman", 12), bg="#3E3E3E", fg="#FFFFFF")
+        self.search_box = tk.Entry(self.header_frame, width=25, font=("Times New Roman", 12), bg="#3E3E3E",
+                                   fg="#FFFFFF")
         self.search_box.pack(side=tk.RIGHT, padx=(0, 20))
 
         # Add search filter options
@@ -112,7 +114,7 @@ class Header(tk.Frame):
             relief=tk.FLAT,
             bg="#2C2C2C"
         )
-        
+
         # Calculate the x position of the search icon based on the search_box width
         search_icon_x = self.search_box.winfo_reqwidth() - 25
         self.search_icon_label.place(x=search_icon_x, y=-2)
@@ -147,7 +149,9 @@ class Header(tk.Frame):
         where = f"%{where}%"
         where = (where,)
         if option == "All":
-            cursor.execute("SELECT * from comics WHERE title LIKE %s OR author LIKE %s OR artist LIKE %s OR series LIKE %s", where * 4)
+            cursor.execute(
+                "SELECT * from comics WHERE title LIKE %s OR author LIKE %s OR artist LIKE %s OR series LIKE %s",
+                where * 4)
         elif option == "Title":
             cursor.execute("SELECT * from comics WHERE title LIKE %s", where)
         elif option == "Author":
@@ -155,8 +159,8 @@ class Header(tk.Frame):
         elif option == "Artist":
             cursor.execute("SELECT * from comics WHERE artist LIKE %s", where)
         elif option == "Series":
-            cursor.execute("SELECT * from comics WHERE series LIKE %s", where) 
-        
+            cursor.execute("SELECT * from comics WHERE series LIKE %s", where)
+
         if cursor.rowcount > 0:
             return cursor.fetchall()
 
@@ -173,7 +177,7 @@ class Header(tk.Frame):
             self.user_info.show_user_info()
         else:
             self.user_menu.show_user_menu(event)
-            
+
     def update_user_icon(self):
         if self.user_menu.is_logged_in():
             avatar_image = Image.open(self.user_info.user_data['avatar'])
@@ -181,6 +185,24 @@ class Header(tk.Frame):
             avatar_image_button = ImageTk.PhotoImage(avatar_image)
             self.user_button.config(image=avatar_image_button)
             self.user_button.image = avatar_image_button
+
+    def update_user_data(self, username):
+        if self.user_menu.is_logged_in():
+            s = "SELECT gmail, role FROM users WHERE username = %s"
+            val = (username,)
+            cursor.execute(s, val)
+            result = cursor.fetchone()
+            if result is not None:
+                gmail, role = result
+                self.user_info.user_data['email'] = gmail
+                self.user_info.user_data['user_role'] = role
+                self.user_info.user_data['username'] = username
+
+    def update(self, age, membersince, favorite):
+        self.user_info.user_data['member_since'] = membersince
+        self.user_info.user_data['age'] = age
+        self.user_info.user_data['favorite'] = favorite
+
 
     def update_content(self, results):
         print(f"Updating content with results: {results}")
@@ -193,7 +215,7 @@ class Header(tk.Frame):
             # For example, you can use a label with the title of the comic:
             comic_label = tk.Label(self, text=result[1], font=("Arial", 14))
             comic_label.pack(pady=10)
-            
+
     def show_results_window(self, results):
         results_window = tk.Toplevel(self.parent)
         results_window.title("Search Results")
@@ -207,7 +229,7 @@ class Header(tk.Frame):
         # Create comic information boxes and add them to the grid
         row = 0
         column = 0
-        max_columns = 2 
+        max_columns = 2
         padding = 10
 
         for index, result in enumerate(results):
@@ -215,7 +237,8 @@ class Header(tk.Frame):
             comic_frame.grid(row=row, column=column, padx=padding, pady=padding, sticky="nsew")
             comic_frame.grid_propagate(False)
 
-            title_label = ttk.Label(comic_frame, text=result[0], wraplength=300, justify="center", foreground="white", background="#2C2C2C", font=("Comic Sans MS", 16))
+            title_label = ttk.Label(comic_frame, text=result[0], wraplength=300, justify="center", foreground="white",
+                                    background="#2C2C2C", font=("Comic Sans MS", 16))
             title_label.pack(padx=padding, pady=padding)
 
             # Load and display the cover image
@@ -232,13 +255,16 @@ class Header(tk.Frame):
             details_frame = ttk.Frame(comic_frame)
             details_frame.pack(side="left", fill="both", expand=True)
 
-            author_label = tk.Label(details_frame, text=f"Author: {result[1]}", font=("Comic Sans MS", 10), fg="#F5F5F5", bg="#2C2C2C", anchor="w", wraplength=220, justify="left")
+            author_label = tk.Label(details_frame, text=f"Author: {result[1]}", font=("Comic Sans MS", 10),
+                                    fg="#F5F5F5", bg="#2C2C2C", anchor="w", wraplength=220, justify="left")
             author_label.pack(anchor="w")
 
-            artist_label = tk.Label(details_frame, text=f"Artist: {result[2]}", font=("Comic Sans MS", 10), fg="#F5F5F5", bg="#2C2C2C", anchor="w", wraplength=220, justify="left")
+            artist_label = tk.Label(details_frame, text=f"Artist: {result[2]}", font=("Comic Sans MS", 10),
+                                    fg="#F5F5F5", bg="#2C2C2C", anchor="w", wraplength=220, justify="left")
             artist_label.pack(anchor="w")
 
-            series_label = tk.Label(details_frame, text=f"Series: {result[7]}", font=("Comic Sans MS", 10), fg="#F5F5F5", bg="#2C2C2C", anchor="w", wraplength=220, justify="left")
+            series_label = tk.Label(details_frame, text=f"Series: {result[7]}", font=("Comic Sans MS", 10),
+                                    fg="#F5F5F5", bg="#2C2C2C", anchor="w", wraplength=220, justify="left")
             series_label.pack(anchor="w")
 
             # Update the row and column for the next comic box

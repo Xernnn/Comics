@@ -6,6 +6,7 @@ from content import Content
 from left_menu import LeftMenu
 from user_menu import UserMenu
 from user_info import UserInfo
+from Update import Update
 
 class Management(Header, UserMenu):
     def __init__(self, root):
@@ -38,6 +39,12 @@ class Management(Header, UserMenu):
 
         # Assign the callback function after creating header
         user_menu.update_user_icon_callback = self.header.update_user_icon
+
+        # Assign the callback function after creating header
+        user_menu.update_user_data_callback = self.header.update_user_data
+
+        # Assign the callback function after creating header
+        Update.update_data_callback = self.header.update
 
         # Pack header
         self.header.pack(side=tk.TOP, fill=tk.X)

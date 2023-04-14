@@ -9,6 +9,7 @@ class UserMenu:
         self.window = window
         self.logged_in = False
         self.update_user_icon_callback = None
+        self.update_user_data_callback = None
 
     def show_user_menu(self, event):
         self.user_menu_window = tk.Toplevel(self.window)
@@ -82,6 +83,8 @@ class UserMenu:
             if self.update_user_icon_callback:  # Check if the callback is assigned
                 self.update_user_icon_callback()  # Call the callback function
             self.user_menu_window.destroy()
+            if self.update_user_data_callback:
+                self.update_user_data_callback(username)
         else:
             error_msg = "Invalid username or password."
             tk.messagebox.showerror("Error", error_msg)
@@ -120,4 +123,3 @@ class UserMenu:
             return result[0]  # Return the username
         else:
             return False
-
