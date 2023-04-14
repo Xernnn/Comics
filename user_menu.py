@@ -85,9 +85,8 @@ class UserMenu:
         else:
             error_msg = "Invalid username or password."
             tk.messagebox.showerror("Error", error_msg)
-            self.user_menu_window.destroy()
-            new_user_menu = UserMenu(self.window)
-            new_user_menu.show_user_menu(None)
+            self.username_entry.delete(0, tk.END)
+            self.password_entry.delete(0, tk.END)
 
 
     def signup(self):
@@ -121,3 +120,4 @@ class UserMenu:
             return result[0]  # Return the username
         else:
             return False
+
