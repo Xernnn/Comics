@@ -1,5 +1,5 @@
 import tkinter as tk
-
+import user_queries
 class ForgetPassword:
     def __init__(self, window):
         self.window = window
@@ -50,5 +50,13 @@ class ForgetPassword:
 
     def retrieve_password(self):
         # You can add more logic here to handle actual password retrieval
-        print("Password retrieved")
-        self.forget_password_window.destroy()
+        password = user_queries.forgot(self.email_entry.get(), self.username_entry.get())
+        if password != None:
+            tk.messagebox.showinfo("Password Retrieval", f"Your password is: {password}")
+            self.forget_password_window.destroy()
+            print("Password retrieved")
+        else:
+            error_msg = "Could not retrieve password. Please check your email and username."
+            tk.messagebox.showerror("Error", error_msg)
+
+
