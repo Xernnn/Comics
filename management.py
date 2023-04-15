@@ -9,7 +9,7 @@ from user_info import UserInfo
 from Update import Update
 
 class Management(Header, UserMenu):
-    def __init__(self, root):
+    def __init__(self, root, cursor):
         self.window = root
         self.window.title("ComixHub Homepage")
 
@@ -27,21 +27,21 @@ class Management(Header, UserMenu):
         self.window.config(bg="#1A1918")
 
         # Create user_info and user_menu objects
-        user_info = UserInfo(root)
-        user_menu = UserMenu(root)
+        self.user_info = UserInfo(self.window, cursor)
+        self.user_menu = UserMenu(root)
 
         # Create sidebar object
         self.sidebar = LeftMenu(root)
         self.left_menu = LeftMenu(self.details_frame)  # Create an instance of LeftMenu
 
         # Create the header object
-        self.header = Header(self.header_frame, self.go_to_homepage, self.search_comic, self.sidebar.toggle_left_menu, user_menu, user_info)
+        self.header = Header(self.header_frame, self.go_to_homepage, self.search_comic, self.sidebar.toggle_left_menu, self.user_menu, self.user_info)
 
         # Assign the callback function after creating header
-        user_menu.update_user_icon_callback = self.header.update_user_icon
+        self.user_menu.update_user_icon_callback = self.header.update_user_icon
 
         # Assign the callback function after creating header
-        user_menu.update_user_data_callback = self.header.update_user_data
+        self.user_menu.update_user_data_callback = self.header.update_user_data
 
         # Assign the callback function after creating header
         Update.update_data_callback = self.header.update
@@ -54,6 +54,8 @@ class Management(Header, UserMenu):
         self.content = Content(content_frame, self.show_details)
         content_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         
+        self.set_update_user_icon_callback(self.header.update_user_icon)
+
 
     def go_to_homepage(self):
         # Perform the action when the ComicHub label is clicked
@@ -61,7 +63,7 @@ class Management(Header, UserMenu):
         self.window.destroy()
         root = tk.Tk()
         root.state('zoomed')
-        obj = Management(root)
+        obj = Management(root, cursor)
         root.mainloop()
         
     def search_comic(self, search_query):
@@ -77,5 +79,7 @@ class Management(Header, UserMenu):
         results = self.header.search(1, search_query)
         self.content.search_and_update_content(results)
         
+    def set_update_user_icon_callback(self, callback):
+        self.user_info.set_update_user_icon_callback(callback)
 
 
