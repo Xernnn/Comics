@@ -54,14 +54,6 @@ class Register:
         self.confirm_password_entry = tk.Entry(register_frame, show="*")
         self.confirm_password_entry.grid(row=3, column=1, pady=(0, 5), padx=(2, 0), sticky=tk.W)
 
-        # Avatar label and entry field
-
-        avatar_label = tk.Label(register_frame, text="Avatar Image Link:")
-        avatar_label.grid(row=4, column=0, pady=(0, 5), sticky=tk.W)
-
-        self.avatar_entry = tk.Entry(register_frame)
-        self.avatar_entry.grid(row=4, column=1, pady=(0, 5), padx=(2, 0), sticky=tk.W)
-
         # Create a frame to contain the buttons
         button_frame = tk.Frame(register_frame)
         button_frame.grid(row=5, column=0, columnspan=2, pady=(10, 0))
@@ -88,12 +80,11 @@ class Register:
             user_data = {
                 "username": self.username_entry.get(),
                 "password": self.password_entry.get(),
-                "avatar": self.avatar_entry.get(),
                 "gmail": self.email_entry.get()
             }
             user_queries.add(user_data)
         except mysql.connector.errors.IntegrityError:
-            error_msg = "This username is already used by someone else."
+            error_msg = "The username is not available."
             tk.messagebox.showerror("Error", error_msg)
             self.password_entry.delete(0, tk.END)
             self.confirm_password_entry.delete(0, tk.END)
