@@ -2,7 +2,10 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from Update import Update
 import requests
+import mysql.connector as sql
 
+db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
+cursor = db.cursor(buffered=True)
 
 class UserInfo:
     def __init__(self, window, cursor, update_user_icon_callback=None):
