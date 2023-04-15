@@ -1,12 +1,14 @@
 import tkinter as tk
 from PIL import Image, ImageTk
+from Update import Update
 import random
 from lorem_text import lorem
+
 
 class UserInfo:
     def __init__(self, window):
         self.window = window
-        
+
         # self.user_data = {
         #     'avatar': 'images/orgasm.jpg',
         #     'username': 'Xern',
@@ -19,19 +21,16 @@ class UserInfo:
         #     'comics_read': 135,
         #     'chapters_read': 2184
         # }
-        
+
         # if user_data is None:
         user_data = {
             'avatar': 'images/orgasm.jpg',
-            'username': lorem.words(1),
-            'email': f"{lorem.words(1)}@{lorem.words(1)}.com",
-            'age': random.randint(13, 99),
-            'member_since': f"{random.randint(1, 31)}/{random.randint(1, 12)}/{random.randint(2000, 2023)}",
-            'user_role': random.choice(['Administrator', 'User', 'Moderator']),
-            'favorite': lorem.words(random.randint(1, 3)),
-            'comics_followed': random.randint(1, 200),
-            'comics_read': random.randint(1, 300),
-            'chapters_read': random.randint(1, 5000)
+            'username': None,
+            'email': None,
+            'age': None,
+            'user_role': None,
+            'favorite': None,
+            'comics_followed': None,
         }
 
         self.user_data = user_data
@@ -39,7 +38,7 @@ class UserInfo:
     def show_user_info(self, event=None):
         self.user_info_window = tk.Toplevel()
         self.user_info_window.title("User Info")
-        
+
         # Center the window on the screen
         window_width = 400
         window_height = 300
@@ -59,7 +58,7 @@ class UserInfo:
         avatar_label = tk.Label(self.user_info_window, image=avatar_image_button)
         avatar_label.image = avatar_image_button
         avatar_label.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), rowspan=6)
-        
+
         # User's info
         username_label = tk.Label(self.user_info_window, text=f"Username: {self.user_data['username']}")
         username_label.grid(row=0, column=1, sticky=tk.W, pady=(10, 0))
@@ -67,20 +66,27 @@ class UserInfo:
         age_label = tk.Label(self.user_info_window, text=f"Age: {self.user_data['age']}")
         age_label.grid(row=1, column=1, sticky=tk.W)
 
-        member_since_label = tk.Label(self.user_info_window, text=f"Member Since: {self.user_data['member_since']}")
-        member_since_label.grid(row=2, column=1, sticky=tk.W)
-
         user_role_label = tk.Label(self.user_info_window, text=f"User Role: {self.user_data['user_role']}")
-        user_role_label.grid(row=3, column=1, sticky=tk.W)
+        user_role_label.grid(row=2, column=1, sticky=tk.W)
 
         favorite_label = tk.Label(self.user_info_window, text=f"Favorite: {self.user_data['favorite']}")
-        favorite_label.grid(row=4, column=1, sticky=tk.W)
+        favorite_label.grid(row=3, column=1, sticky=tk.W)
 
-        comics_followed_label = tk.Label(self.user_info_window, text=f"Comics followed: {self.user_data['comics_followed']}")
-        comics_followed_label.grid(row=5, column=1, sticky=tk.W)
+        comics_followed_label = tk.Label(self.user_info_window,
+                                         text=f"Comics followed: {self.user_data['comics_followed']}")
+        comics_followed_label.grid(row=4, column=1, sticky=tk.W)
 
-        comics_read_label = tk.Label(self.user_info_window, text=f"Comics read: {self.user_data['comics_read']}")
-        comics_read_label.grid(row=6, column=1, sticky=tk.W)
+        # Add a new column and configure it to expand
+        self.user_info_window.columnconfigure(2, weight=1)
 
-        chapters_read_label = tk.Label(self.user_info_window, text=f"Chapters read: {self.user_data['chapters_read']}")
-        chapters_read_label.grid(row=7, column=1, sticky=tk.W)
+        # Button
+        button = tk.Button(self.user_info_window, text="Update", command=self.update)
+        button.grid(row=8, column=1, pady=(20, 10), sticky=tk.E + tk.W)
+        button.configure(anchor='center')
+
+
+
+    def update(self):
+        Update(self.user_info_window)
+
+

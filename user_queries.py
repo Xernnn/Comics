@@ -7,7 +7,7 @@ cursor = db.cursor(buffered=True)
 # ADD user
 def add(user_data):
     values = tuple(user_data.values())
-    cursor.execute("INSERT INTO users(username, password, avatar, gmail, role) VALUES(%s,%s,'https://imgur.com/a/OFOZMdx',%s,'user')",values)
+    cursor.execute("INSERT INTO users(username, password, avatar, gmail, role) VALUES(%s,%s,%s,%s,'user')",values)
 # DELETE user
 def delete(username):
     del_username = (username,)
@@ -24,9 +24,14 @@ def update(gmail, username, avatar, where):
     cursor.execute("UPDATE users SET username=%s, avatar=%s, gmail=%s WHERE username=%s",data)
 
 # FORGOR PASSWORD
-def forgor(gmail, username):
+def forgot(gmail, username):
     data = (username, gmail)
-    cursor.execute("SELECT * from users WHERE username = %s and gmail = %s", data)
+    cursor.execute("SELECT password from users WHERE username = %s and gmail = %s", data)
+    password = cursor.fetchone()
+    if password:
+        return password[0]
+    else:
+        return None
 
 # CHANGE PASSWORD
 def changepw(password, where):
@@ -36,6 +41,7 @@ def changepw(password, where):
 
 
 # MAIN FUNCTION
+""" 
 while 1:
     choice = int(input("1 to register, 2 to login, 3 if u forgor password: "))
     if choice == 1:
@@ -101,4 +107,5 @@ while 1:
         if len(result) == 0:
             print("gmail or username is invalid")
         else:
-            print("your password is: ", result[0][1])
+            print("your password is: ", result[0][1]) 
+"""
