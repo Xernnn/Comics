@@ -6,6 +6,8 @@ CREATE TABLE users (
     avatar text,
     gmail varchar(255),
     role varchar (255),
+    age int, 
+    favorite varchar(255),
     PRIMARY KEY (
         username
     )
