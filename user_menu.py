@@ -3,7 +3,6 @@ import mysql.connector as sql
 from register import Register
 from forget_password import ForgetPassword
 
-
 class UserMenu:
     def __init__(self, window):
         self.window = window
@@ -85,11 +84,13 @@ class UserMenu:
             self.user_menu_window.destroy()
             if self.update_user_data_callback:
                 self.update_user_data_callback(username)
+            return success
         else:
             error_msg = "Invalid username or password."
             tk.messagebox.showerror("Error", error_msg)
             self.username_entry.delete(0, tk.END)
             self.password_entry.delete(0, tk.END)
+            return None
 
 
     def signup(self):
