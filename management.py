@@ -11,6 +11,7 @@ from Update import Update
 class Management(Header, UserMenu):
     def __init__(self, root, cursor):
         self.window = root
+        self.cursor = cursor
         self.window.title("ComixHub Homepage")
 
         # Create header_frame and details_frame
@@ -63,7 +64,7 @@ class Management(Header, UserMenu):
         self.window.destroy()
         root = tk.Tk()
         root.state('zoomed')
-        obj = Management(root, cursor)
+        obj = Management(root, self.cursor)
         root.mainloop()
         
     def search_comic(self, search_query):
