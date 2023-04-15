@@ -36,17 +36,11 @@ class Update:
         self.age_entry = tk.Entry(update_frame)
         self.age_entry.grid(row=0, column=1, pady=(0, 5), padx=(2, 0), sticky=tk.W)
 
-        membersince_label = tk.Label(update_frame, text="Member Since:")
-        membersince_label.grid(row=1, column=0, pady=(0, 5), sticky=tk.W)
-
-        self.membersince_entry = tk.Entry(update_frame)
-        self.membersince_entry.grid(row=1, column=1, pady=(0, 5), padx=(2, 0), sticky=tk.W)
-
         favorite_label = tk.Label(update_frame, text="Favorite:")
-        favorite_label.grid(row=2, column=0, pady=(0, 5), sticky=tk.W)
+        favorite_label.grid(row=1, column=0, pady=(0, 5), sticky=tk.W)
 
-        self.favorite_entry = tk.Entry(update_frame, show="*")
-        self.favorite_entry.grid(row=2, column=1, pady=(0, 5), padx=(2, 0), sticky=tk.W)
+        self.favorite_entry = tk.Entry(update_frame)
+        self.favorite_entry.grid(row=1, column=1, pady=(0, 5), padx=(2, 0), sticky=tk.W)
 
         # Create a frame to contain the buttons
         button_frame = tk.Frame(update_frame)
@@ -61,9 +55,8 @@ class Update:
         self.update_button.pack()
 
     def update_user(self):
-        membersince = self.membersince_entry.get()
         favorite = self.favorite_entry.get()
         age = self.age_entry.get()
         if self.update_data_callback:
-            self.update_data_callback(age, membersince, favorite)
+            self.update_data_callback(age, favorite)
         self.update_window.destroy()

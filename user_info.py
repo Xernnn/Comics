@@ -28,12 +28,9 @@ class UserInfo:
             'username': None,
             'email': None,
             'age': None,
-            'member_since': None,
             'user_role': None,
             'favorite': None,
             'comics_followed': None,
-            'comics_read': None,
-            'chapters_read': None
         }
 
         self.user_data = user_data
@@ -69,24 +66,15 @@ class UserInfo:
         age_label = tk.Label(self.user_info_window, text=f"Age: {self.user_data['age']}")
         age_label.grid(row=1, column=1, sticky=tk.W)
 
-        member_since_label = tk.Label(self.user_info_window, text=f"Member Since: {self.user_data['member_since']}")
-        member_since_label.grid(row=2, column=1, sticky=tk.W)
-
         user_role_label = tk.Label(self.user_info_window, text=f"User Role: {self.user_data['user_role']}")
-        user_role_label.grid(row=3, column=1, sticky=tk.W)
+        user_role_label.grid(row=2, column=1, sticky=tk.W)
 
         favorite_label = tk.Label(self.user_info_window, text=f"Favorite: {self.user_data['favorite']}")
-        favorite_label.grid(row=4, column=1, sticky=tk.W)
+        favorite_label.grid(row=3, column=1, sticky=tk.W)
 
         comics_followed_label = tk.Label(self.user_info_window,
                                          text=f"Comics followed: {self.user_data['comics_followed']}")
-        comics_followed_label.grid(row=5, column=1, sticky=tk.W)
-
-        comics_read_label = tk.Label(self.user_info_window, text=f"Comics read: {self.user_data['comics_read']}")
-        comics_read_label.grid(row=6, column=1, sticky=tk.W)
-
-        chapters_read_label = tk.Label(self.user_info_window, text=f"Chapters read: {self.user_data['chapters_read']}")
-        chapters_read_label.grid(row=7, column=1, sticky=tk.W)
+        comics_followed_label.grid(row=4, column=1, sticky=tk.W)
 
         # Add a new column and configure it to expand
         self.user_info_window.columnconfigure(2, weight=1)

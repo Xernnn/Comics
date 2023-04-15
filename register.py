@@ -88,8 +88,8 @@ class Register:
             user_data = {
                 "username": self.username_entry.get(),
                 "password": self.password_entry.get(),
-                "gmail": self.email_entry.get(),
-                "avatar": self.avatar_entry.get()
+                "avatar": self.avatar_entry.get(),
+                "gmail": self.email_entry.get()
             }
             user_queries.add(user_data)
         except mysql.connector.errors.IntegrityError:

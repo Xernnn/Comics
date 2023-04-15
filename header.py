@@ -188,20 +188,29 @@ class Header(tk.Frame):
 
     def update_user_data(self, username):
         if self.user_menu.is_logged_in():
-            s = "SELECT gmail, role FROM users WHERE username = %s"
+            s = "SELECT gmail, role, age, favorite FROM users WHERE username = %s"
             val = (username,)
             cursor.execute(s, val)
             result = cursor.fetchone()
             if result is not None:
-                gmail, role = result
+                gmail, role, age, favorite = result
                 self.user_info.user_data['email'] = gmail
                 self.user_info.user_data['user_role'] = role
                 self.user_info.user_data['username'] = username
+                self.user_info.user_data['favorite'] = favorite
+                self.user_info.user_data['age'] = age
 
-    def update(self, age, membersince, favorite):
-        self.user_info.user_data['member_since'] = membersince
+
+    def update(self, age, favorite):
         self.user_info.user_data['age'] = age
         self.user_info.user_data['favorite'] = favorite
+        user_data = {
+            "age": self.user_info.user_data['age'],
+            "favorite": self.user_info.user_data['favorite'],
+            "username": self.user_info.user_data['username']
+        }
+        values = tuple(user_data.values())
+        cursor.execute("UPDATE users SET age=%s, favorite=%s WHERE username=%s", values)
 
 
     def update_content(self, results):
