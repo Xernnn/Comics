@@ -7,6 +7,7 @@ import mysql.connector.errors
 class Update:
     def __init__(self, window):
         self.window = window
+        self.update_data_callback = None
         self.create_update_window()
         self.update_data = None
 
@@ -41,6 +42,12 @@ class Update:
 
         self.favorite_entry = tk.Entry(update_frame)
         self.favorite_entry.grid(row=1, column=1, pady=(0, 5), padx=(2, 0), sticky=tk.W)
+        
+        avatar_label = tk.Label(update_frame, text="Avatar Image Link:")
+        avatar_label.grid(row=2, column=0, pady=(0, 5), sticky=tk.W)
+
+        self.avatar_entry = tk.Entry(update_frame)
+        self.avatar_entry.grid(row=2, column=1, pady=(0, 5), padx=(2, 0), sticky=tk.W)
 
         # Create a frame to contain the buttons
         button_frame = tk.Frame(update_frame)
@@ -57,6 +64,7 @@ class Update:
     def update_user(self):
         favorite = self.favorite_entry.get()
         age = self.age_entry.get()
+        avatar = self.avatar_entry.get()
         if self.update_data_callback:
-            self.update_data_callback(age, favorite)
+            self.update_data_callback(age, favorite, avatar)
         self.update_window.destroy()
