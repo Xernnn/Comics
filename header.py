@@ -79,8 +79,7 @@ class Header(tk.Frame):
         self.logo_button.pack(side=tk.LEFT, padx=(0, 20))
 
         # Search box
-        self.search_box = tk.Entry(self.header_frame, width=25, font=("Times New Roman", 12), bg="#3E3E3E",
-                                   fg="#FFFFFF")
+        self.search_box = tk.Entry(self.header_frame, width=25, font=("Times New Roman", 12), bg="#3E3E3E", fg="#FFFFFF")
         self.search_box.pack(side=tk.RIGHT, padx=(0, 20))
 
         # Add search filter options
@@ -149,9 +148,7 @@ class Header(tk.Frame):
         where = f"%{where}%"
         where = (where,)
         if option == "All":
-            cursor.execute(
-                "SELECT * from comics WHERE title LIKE %s OR author LIKE %s OR artist LIKE %s OR series LIKE %s",
-                where * 4)
+            cursor.execute("SELECT * from comics WHERE title LIKE %s OR author LIKE %s OR artist LIKE %s OR series LIKE %s", where * 4)
         elif option == "Title":
             cursor.execute("SELECT * from comics WHERE title LIKE %s", where)
         elif option == "Author":
@@ -180,7 +177,10 @@ class Header(tk.Frame):
 
     def update_user_icon(self):
         if self.user_menu.is_logged_in():
-            avatar_image = Image.open(self.user_info.user_data['avatar'])
+            if self.user_info.user_data['avatar'] == 'images/guest.png':
+                avatar_image = Image.open(self.user_info.user_data['avatar'])
+            else:
+                avatar_image = Image.open(requests.get(self.user_info.user_data['avatar'], stream=True).raw)
             avatar_image = avatar_image.resize((35, 35), Image.Resampling.LANCZOS)
             avatar_image_button = ImageTk.PhotoImage(avatar_image)
             self.user_button.config(image=avatar_image_button)
@@ -200,13 +200,14 @@ class Header(tk.Frame):
                 self.user_info.user_data['favorite'] = favorite
                 self.user_info.user_data['age'] = age
 
-
-    def update(self, age, favorite):
+    def update(self, age, favorite, avatar):
         self.user_info.user_data['age'] = age
         self.user_info.user_data['favorite'] = favorite
+        self.user_info.user_data['avatar'] = avatar
         user_data = {
             "age": self.user_info.user_data['age'],
             "favorite": self.user_info.user_data['favorite'],
+            "avatar": self.user_info.user_data['avatar'],
             "username": self.user_info.user_data['username']
         }
         values = tuple(user_data.values())
