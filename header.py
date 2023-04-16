@@ -193,13 +193,13 @@ class Header(tk.Frame):
             cursor.execute(s, val)
             result = cursor.fetchone()
             if result is not None:
-                avatar, gmail, role, age, favorite = result
-                self.user_info.user_data['avatar'] = avatar
+                gmail, role, age, favorite = result
                 self.user_info.user_data['email'] = gmail
                 self.user_info.user_data['user_role'] = role
                 self.user_info.user_data['username'] = username
                 self.user_info.user_data['favorite'] = favorite
                 self.user_info.user_data['age'] = age
+                self.user_info.user_data['avatar'] = avatar
 
     def update(self, age, favorite, avatar):
         self.user_info.user_data['age'] = age
