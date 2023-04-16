@@ -12,19 +12,6 @@ class UserInfo:
         self.window = window
         self.cursor = cursor
         self.update_user_icon_callback = update_user_icon_callback
-        
-        # self.user_data = {
-        #     'avatar': 'images/orgasm.jpg',
-        #     'username': 'Xern',
-        #     'email': 'sonn.bi12-389@st.usth.edu.vn',
-        #     'age': 20,
-        #     'member_since': '28/11/2021',
-        #     'user_role': 'administrator',
-        #     'favorite': 'Spider-man',
-        #     'comics_followed': 118,
-        #     'comics_read': 135,
-        #     'chapters_read': 2184
-        # }
 
         # if user_data is None:
         user_data = {
