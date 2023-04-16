@@ -5,6 +5,7 @@ import requests
 import mysql.connector as sql
 from sort import SortSubMenu
 import os 
+from functools import partial
 
 db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
 cursor = db.cursor(buffered=True)
@@ -234,6 +235,28 @@ class Content(tk.Frame):
             if flag_img:
                 language_flag_label.image = flag_img
             language_flag_label.pack(side="left", pady=5)  # Adjust the pady value to set the vertical gap
+            
+            # Load heart images
+            heart_empty = Image.open("images/heart_empty.png")
+            heart_empty.thumbnail((30, 30))
+            heart_empty = ImageTk.PhotoImage(heart_empty)
+            heart_filled = Image.open("images/heart_filled.png")
+            heart_filled.thumbnail((30, 30))
+            heart_filled = ImageTk.PhotoImage(heart_filled)
+            
+            # Create heart-shaped button
+            follow_button = tk.Button(
+                details_frame,
+                image=heart_empty,
+                relief="flat",
+                bg="#2C2C2C",
+                activebackground="#2C2C2C",
+                command=partial(self.toggle_follow_heart, heart_empty=heart_empty, heart_filled=heart_filled, button=None),
+                borderwidth=0
+            )
+            follow_button['command'] = partial(self.toggle_follow_heart, heart_empty=heart_empty, heart_filled=heart_filled, button=follow_button)
+            follow_button.image = heart_empty
+            follow_button.pack(side="bottom", pady=5)
 
         for i in range(max_columns):
             self.scrollable_frame.columnconfigure(i, weight=1)
@@ -283,3 +306,12 @@ class Content(tk.Frame):
         close_button = tk.Button(sort_window, text="Close", command=sort_window.destroy)
         close_button.pack(pady=10)
 
+    def toggle_follow_heart(self, heart_empty, heart_filled, button=None, username=None):
+        if button.image == heart_empty:
+            button.config(image=heart_filled)
+            button.image = heart_filled
+            # Add any functionality you want here, such as updating the database or user preferences
+        else:
+            button.config(image=heart_empty)
+            button.image = heart_empty
+            # Add any functionality you want here, such as updating the database or user preferences
