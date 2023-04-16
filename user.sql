@@ -8,6 +8,7 @@ CREATE TABLE users (
     role varchar (255),
     age int, 
     favorite varchar(255),
+    comics_followed int,
     PRIMARY KEY (
         username
     )
