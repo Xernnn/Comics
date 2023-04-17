@@ -46,3 +46,5 @@ You can find example datasets of comics inside the [example datasets](https://gi
 - The small dataset [comics.csv](https://github.com/Xernnn/Comics/blob/main/example%20datasets/comics(S).csv) including 10 different comics that you can easily import to test the project. 
 
 - The larger dataset [comicsL.csv](https://github.com/Xernnn/Comics/blob/main/example%20datasets/comics(L).csv) including 135 different comics.
+
+Also the dataset of users for the administrators: [users.csv](https://github.com/Xernnn/Comics/blob/main/example%20datasets/users.csv)
