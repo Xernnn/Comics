@@ -7,6 +7,7 @@ class ForgetPassword:
     def show_forget_password_window(self):
         self.forget_password_window = tk.Toplevel(self.window)
         self.forget_password_window.title("Forget Password")
+        self.forget_password_window.iconbitmap('images/ch.ico')
 
         # Center the window on the screen
         window_width = 300

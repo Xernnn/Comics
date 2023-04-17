@@ -193,13 +193,13 @@ class Header(tk.Frame):
             cursor.execute(s, val)
             result = cursor.fetchone()
             if result is not None:
-                gmail, role, age, favorite = result
+                avatar, gmail, role, age, favorite = result
+                self.user_info.user_data['avatar'] = avatar
                 self.user_info.user_data['email'] = gmail
                 self.user_info.user_data['user_role'] = role
                 self.user_info.user_data['username'] = username
                 self.user_info.user_data['favorite'] = favorite
                 self.user_info.user_data['age'] = age
-                self.user_info.user_data['avatar'] = avatar
 
     def update(self, age, favorite, avatar):
         self.user_info.user_data['age'] = age
@@ -230,6 +230,7 @@ class Header(tk.Frame):
     def show_results_window(self, results):
         results_window = tk.Toplevel(self.parent)
         results_window.title("Search Results")
+        results_window.iconbitmap('images/ch.ico')
         results_window.geometry("800x600")
         results_window.config(bg="#1A1918")
 

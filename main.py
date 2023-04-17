@@ -7,6 +7,7 @@ def show_loading_screen():
     loading_screen = tk.Toplevel(root)
     loading_screen.geometry('300x100')
     loading_screen.title('Loading...')
+    loading_screen.iconbitmap('images/ch.ico')
 
     loading_label = tk.Label(loading_screen, text='Loading comics, please wait...', font=('Comic Sans MS', 14))
     loading_label.pack(pady=20)

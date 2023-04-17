@@ -13,6 +13,7 @@ class Management(Header, UserMenu):
         self.window = root
         self.cursor = cursor
         self.window.title("ComixHub Homepage")
+        self.window.iconbitmap('images/ch.ico')
 
         # Create header_frame and details_frame
         self.header_frame = tk.Frame(

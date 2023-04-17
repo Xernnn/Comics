@@ -10,6 +10,7 @@ class Register:
 
     def create_register_window(self):
         self.register_window = tk.Toplevel(self.window)
+        self.register_window.iconbitmap('images/ch.ico')
         self.register_window.title("Register")
 
         # Center the window on the screen

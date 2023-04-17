@@ -44,6 +44,7 @@ class ComicDetails(tk.Toplevel):
     def __init__(self, master, comic):
         super().__init__(master)
         self.title("Comic Details")
+        self.iconbitmap('images/ch.ico')
         self.geometry("1000x600")
         self.config(bg="#2C2C2C")
         self.comic = comic

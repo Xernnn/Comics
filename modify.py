@@ -86,6 +86,7 @@ class ModifySubMenu:
     def add_comic(self):
         add_window = tk.Toplevel(self.parent_frame)
         add_window.title("Add Comic")
+        add_window.iconbitmap('images/ch.ico')
         add_window.geometry("400x400")
 
         labels = ["Title", "Author", "Artist", "Publisher", "Publish Date", "Genre", "Volume", "Series", "Cover Image URL", "Language", "Synopsis"]
@@ -116,6 +117,7 @@ class ModifySubMenu:
     def delete_comic(self):
         delete_window = tk.Toplevel(self.parent_frame)
         delete_window.title("Delete Comic")
+        delete_window.iconbitmap('images/ch.ico')
         delete_window.geometry("350x100")
 
         title_label = tk.Label(delete_window, text="Title", anchor="w")
@@ -140,6 +142,7 @@ class ModifySubMenu:
     def update_comic(self):
         update_window = tk.Toplevel(self.parent_frame)
         update_window.title("Update Comic")
+        update_window.iconbitmap('images/ch.ico')
         update_window.geometry("350x100")
 
         title_label = tk.Label(update_window, text="Title", anchor="w")
@@ -168,6 +171,7 @@ class ModifySubMenu:
     def display_update_form(self, original_title, comic_data):
         update_form = tk.Toplevel(self.parent_frame)
         update_form.title("Update Comic")
+        update_form.iconbitmap('images/ch.ico')
         update_form.geometry("400x400")
 
         labels = ["Title", "Author", "Artist", "Publisher", "Publish Date", "Genre", "Volume", "Series", "Cover Image", "Language", "Synopsis"]

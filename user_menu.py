@@ -13,6 +13,7 @@ class UserMenu:
     def show_user_menu(self, event):
         self.user_menu_window = tk.Toplevel(self.window)
         self.user_menu_window.title("Log in")
+        self.user_menu_window.iconbitmap('images/ch.ico')
 
         # Center the window on the screen
         window_width = 300
