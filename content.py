@@ -6,18 +6,22 @@ import mysql.connector as sql
 from sort import SortSubMenu
 import os 
 from functools import partial
+import tkinter.messagebox as messagebox
 
 db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
 cursor = db.cursor(buffered=True)
 
 class Content(tk.Frame):
-    def __init__(self, details_frame, show_details_callback=None):
+    def __init__(self, parent, details_frame, show_details_callback=None, user_menu=None, current_user=None):
         super().__init__(details_frame)
         self.details_frame = details_frame
         # self.content_area = tk.Frame(...)
         self.comics = []
         self.show_details_callback = show_details_callback
         self.title_frame = None
+        self.parent = parent
+        self.user_menu = user_menu
+        self.current_user = current_user
 
         # Set up the content frame
         self.create_content()
@@ -236,6 +240,8 @@ class Content(tk.Frame):
                 language_flag_label.image = flag_img
             language_flag_label.pack(side="left", pady=5)  # Adjust the pady value to set the vertical gap
             
+            is_followed = self.is_comic_followed(self.current_user, comic[0])
+            
             # Load heart images
             heart_empty = Image.open("images/heart_empty.png")
             heart_empty.thumbnail((30, 30))
@@ -247,15 +253,15 @@ class Content(tk.Frame):
             # Create heart-shaped button
             follow_button = tk.Button(
                 details_frame,
-                image=heart_empty,
+                image=heart_empty if not is_followed else heart_filled,
                 relief="flat",
                 bg="#2C2C2C",
                 activebackground="#2C2C2C",
                 command=partial(self.toggle_follow_heart, heart_empty=heart_empty, heart_filled=heart_filled, button=None),
                 borderwidth=0
             )
-            follow_button['command'] = partial(self.toggle_follow_heart, heart_empty=heart_empty, heart_filled=heart_filled, button=follow_button)
-            follow_button.image = heart_empty
+            follow_button['command'] = partial(self.toggle_follow_heart, heart_empty=heart_empty, heart_filled=heart_filled, button=follow_button, title=comic[0], username=self.user_menu.current_user)
+            follow_button.image = heart_empty if not is_followed else heart_filled
             follow_button.pack(side="bottom", pady=5)
 
         for i in range(max_columns):
@@ -306,12 +312,44 @@ class Content(tk.Frame):
         close_button = tk.Button(sort_window, text="Close", command=sort_window.destroy)
         close_button.pack(pady=10)
 
-    def toggle_follow_heart(self, heart_empty, heart_filled, button=None, username=None):
+    def toggle_follow_heart(self, heart_empty, heart_filled, button=None, username=None, title=None):
+        # Get the updated username from the UserMenu class
+        username = self.user_menu.get_current_user()
+
+        if username is None:
+            messagebox.showinfo("Not Logged In", "Please log in to follow or unfollow comics.")
+            return
+
         if button.image == heart_empty:
             button.config(image=heart_filled)
             button.image = heart_filled
-            # Add any functionality you want here, such as updating the database or user preferences
+            self.update_comic_follow_status(username, title, True)
+            messagebox.showinfo("Followed", f"You've followed {title}")
         else:
             button.config(image=heart_empty)
             button.image = heart_empty
-            # Add any functionality you want here, such as updating the database or user preferences
+            self.update_comic_follow_status(username, title, False)
+            messagebox.showinfo("Unfollowed", f"You've unfollowed {title}")
+
+    def update_comic_follow_status(self, username, title, follow_status):
+        if follow_status:  # If follow_status is True, insert the record
+            query = "INSERT INTO followed_comics (username, title) VALUES (%s, %s)"
+            values = (username, title)
+        else:  # If follow_status is False, delete the record
+            query = "DELETE FROM followed_comics WHERE username = %s AND title = %s"
+            values = (username, title)
+
+        cursor.execute(query, values)
+        db.commit()
+
+    def is_comic_followed(self, username, title):
+        if username is None:
+            return False
+
+        query = "SELECT * FROM followed_comics WHERE username = %s AND title = %s"
+        values = (username, title)
+        cursor.execute(query, values)
+        result = cursor.fetchone()
+
+        return result is not None
+
