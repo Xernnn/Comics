@@ -7,7 +7,7 @@
 - BI12-357 Nguyen Duc Phuong
 - BI12-390 Vu Hung Son
 
-![Sample](https://github.com/Xernnn/Comics/blob/main/images/sample.png)
+![Sample](https://github.com/Xernnn/Comics/blob/main/images/README/sample.png)
 
 
 ## Demo
@@ -38,10 +38,11 @@ python main.py
 ```
 
 ## Inside the App Interface
+You can find all the things you can do in this app in [this README file](https://github.com/Xernnn/Comics/tree/main/READMELATER.md)
 
 ## Example Dataset
 You can find example datasets of comics inside the [example datasets](https://github.com/Xernnn/Comics/tree/main/example%20datasets) folder.
 
-- The small dataset [comics(S).csv](https://github.com/Xernnn/Comics/blob/main/example%20datasets/comics(S).csv) including 10 different comics that you can easily import to test the project. 
+- The small dataset [comics.csv](https://github.com/Xernnn/Comics/blob/main/example%20datasets/comics(S).csv) including 10 different comics that you can easily import to test the project. 
 
-- The larger dataset [comics(L).csv](https://github.com/Xernnn/Comics/blob/main/example%20datasets/comics(L).csv) including 135 different comics.
+- The larger dataset [comicsL.csv](https://github.com/Xernnn/Comics/blob/main/example%20datasets/comics(L).csv) including 135 different comics.
