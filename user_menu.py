@@ -4,11 +4,12 @@ from register import Register
 from forget_password import ForgetPassword
 
 class UserMenu:
-    def __init__(self, window):
+    def __init__(self, window, update_user_icon_callback = None):
         self.window = window
         self.logged_in = False
-        self.update_user_icon_callback = None
+        self.update_user_icon_callback = update_user_icon_callback
         self.update_user_data_callback = None
+        self.current_user = None
 
     def show_user_menu(self, event):
         self.user_menu_window = tk.Toplevel(self.window)
@@ -70,6 +71,10 @@ class UserMenu:
             command=self.register
         )
         self.register_button.grid(row=0, column=1, padx=(10, 0), pady=(0, 5))
+        
+        # Call the update_user_icon method
+        if self.update_user_icon_callback:
+            self.update_user_icon_callback()
 
     def login(self):
         # Call the signin function with entered username and password
@@ -79,6 +84,7 @@ class UserMenu:
 
         if success != False:
             self.logged_in = True
+            self.current_user = username
             print("Logged in")
             if self.update_user_icon_callback:  # Check if the callback is assigned
                 self.update_user_icon_callback()  # Call the callback function
@@ -125,3 +131,10 @@ class UserMenu:
             return result[0]  # Return the username
         else:
             return False
+        
+    def set_update_user_icon_callback(self, callback):
+        self.update_user_icon_callback = callback
+        
+    def get_current_user(self):
+        return self.current_user
+
