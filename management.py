@@ -7,8 +7,9 @@ from left_menu import LeftMenu
 from user_menu import UserMenu
 from user_info import UserInfo
 from Update import Update
+from sort import SortSubMenu
 
-class Management(Header, UserMenu):
+class Management(Header, UserMenu, Content):
     def __init__(self, root, cursor):
         self.window = root
         self.cursor = cursor
@@ -33,8 +34,8 @@ class Management(Header, UserMenu):
         self.user_menu = UserMenu(root)
 
         # Create sidebar object
-        self.sidebar = LeftMenu(root)
-        self.left_menu = LeftMenu(self.details_frame)  # Create an instance of LeftMenu
+        self.sidebar = LeftMenu(root, self.go_to_homepage)
+        self.left_menu = LeftMenu(self.details_frame, self.go_to_homepage)  # Create an instance of LeftMenu
 
         # Create the header object
         self.header = Header(self.header_frame, self.go_to_homepage, self.search_comic, self.sidebar.toggle_left_menu, self.user_menu, self.user_info)
@@ -57,7 +58,6 @@ class Management(Header, UserMenu):
         content_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         
         self.set_update_user_icon_callback(self.header.update_user_icon)
-
 
     def go_to_homepage(self):
         # Perform the action when the ComicHub label is clicked
@@ -83,5 +83,3 @@ class Management(Header, UserMenu):
         
     def set_update_user_icon_callback(self, callback):
         self.user_info.set_update_user_icon_callback(callback)
-
-

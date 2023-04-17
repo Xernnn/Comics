@@ -30,7 +30,7 @@ class Content(tk.Frame):
         cursor.execute("select * from sort")
         temp = cursor.fetchall() 
         if len(temp) == 0:
-            order_by = "title ASC"
+            order_by = "RAND()"
         else: 
             order_by = temp[0][0]
             print(temp[0][0])
@@ -81,7 +81,7 @@ class Content(tk.Frame):
         self.scrollable_frame.bind("<Enter>", lambda _: self.scrollable_frame.focus_set())
         self.scrollable_frame.bind("<MouseWheel>", self._on_mouse_wheel)
         
-        self.sort_menu = SortSubMenu(self.scrollable_frame, self, 0, 20, 1, ("TkDefaultFont", 12), (10, 5), self.sort_and_update_content)
+        self.sort_menu = SortSubMenu(self.scrollable_frame, self, 0, 20, 1, ("TkDefaultFont", 12), (10, 5), None)
 
     def generate_comics(self, order_by):            
         query = "SELECT * from comics"
@@ -283,22 +283,6 @@ class Content(tk.Frame):
         search_results = [comic for comic in self.comics if self.filter_comics(comic, search_query)]
         self.display_comics(search_results)
 
-    def sort_and_update_content(self, order_by):
-        # Check the order type (ascending or descending)
-        if order_by == "title_desc":
-            order_by = "title DESC"
-        elif order_by == "release_date_asc":
-            order_by = "release_date"
-
-        # Fetch the sorted data from the database
-        cursor.execute(f"SELECT * FROM comics ORDER BY {order_by}")
-        print(f"SELECT * FROM comics ORDER BY {order_by}")
-        sorted_data = cursor.fetchall()
-
-        # Update the content with the sorted data
-        self.clear_content()
-        self.add_content(sorted_data)
-
     def show_sort_results(self, sorted_data):
         sort_window = tk.Toplevel(self)
         sort_window.title("Sorted Results")
@@ -352,4 +336,6 @@ class Content(tk.Frame):
         result = cursor.fetchone()
 
         return result is not None
+
+
 

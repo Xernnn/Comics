@@ -3,7 +3,8 @@ from sort import SortSubMenu
 from modify import ModifySubMenu
 
 class LeftMenu:
-    def __init__(self, details_frame, master=None, content=None):
+    def __init__(self, details_frame, update_sort,  master=None, content=None):
+        self.update_sort = update_sort
         self.master = master
         self.content = content
         self.details_frame = details_frame
@@ -50,17 +51,11 @@ class LeftMenu:
         
         submenus = {}
         for index, (main_label, submenu_class) in enumerate(submenu_classes.items()):
-            action_callback = self.sort_callback if main_label == "Sort" else self.modify_callback
-            submenu = submenu_class(button_frame, self.content, index, button_width, button_height, button_font, button_padding, action_callback)
+            # action_callback = self.sort_callback()
+            submenu = submenu_class(button_frame, self.content, index, button_width, button_height, button_font, button_padding, self.update_sort)
             submenus[main_label] = submenu
 
         self.submenus = submenus
         self.left_menu_frame = button_frame  # Assign the button_frame to self.left_menu_frame
         
         return button_frame
-
-    def sort_callback(self, button_text):
-        print(f"Sort action: {button_text}")
-
-    def modify_callback(self, button_text):
-        print(f"Modify action: {button_text}")
