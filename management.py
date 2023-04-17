@@ -53,7 +53,7 @@ class Management(Header, UserMenu):
 
         # Create the content
         content_frame = ttk.Frame(root, style='ContentFrame.TFrame')
-        self.content = Content(content_frame, self.show_details)
+        self.content = Content(parent=self.details_frame, details_frame=content_frame, show_details_callback=self.show_details, user_menu=self.user_menu, current_user=self.user_menu.get_current_user())
         content_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
         
         self.set_update_user_icon_callback(self.header.update_user_icon)
