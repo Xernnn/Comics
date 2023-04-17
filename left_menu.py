@@ -64,3 +64,4 @@ class LeftMenu:
 
     def modify_callback(self, button_text):
         print(f"Modify action: {button_text}")
+        
