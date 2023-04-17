@@ -83,5 +83,3 @@ class Management(Header, UserMenu):
         
     def set_update_user_icon_callback(self, callback):
         self.user_info.set_update_user_icon_callback(callback)
-
-
