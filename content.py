@@ -315,3 +315,4 @@ class Content(tk.Frame):
             button.config(image=heart_empty)
             button.image = heart_empty
             # Add any functionality you want here, such as updating the database or user preferences
+
