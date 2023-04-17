@@ -1,2 +1,3 @@
-username,password,avatar,gmail,role,age,favorite
-Xern,12345,https://i.imgur.com/icjPSHI.jpeg, sonn.bi12-389@st.usth.edu.vn,Admin,20,Oshi no ko
+username,password,avatar,gmail,role,age,favorite,comics_followed
+Xern,12345,https://i.imgur.com/icjPSHI.jpeg,sonn.bi12-389@st.usth.edu.vn,Admin,20,Oshi no ko,Akira #1
+group5ds,abc,https://i.imgur.com/icjPSHI.jpeg,group5@gmail.com,Admin,20,Conan,Akira #1
