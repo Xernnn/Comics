@@ -11,10 +11,3 @@ Pillow
 
 # Requests to import web URLs
 requests
-
-# Random to randomize things
-random
-
-# Lorem ipsum dolor sit amet, consectetur adip... 
-# (Create random meaningless words)
-lorem-text
