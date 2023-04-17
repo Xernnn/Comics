@@ -188,18 +188,19 @@ class Header(tk.Frame):
 
     def update_user_data(self, username):
         if self.user_menu.is_logged_in():
-            s = "SELECT avatar, gmail, role, age, favorite FROM users WHERE username = %s"
+            s = "SELECT avatar, gmail, role, age, favorite, comics_followed FROM users WHERE username = %s"
             val = (username,)
             cursor.execute(s, val)
             result = cursor.fetchone()
             if result is not None:
-                avatar, gmail, role, age, favorite = result
+                avatar, gmail, role, age, favorite, comics_followed = result
                 self.user_info.user_data['avatar'] = avatar
                 self.user_info.user_data['email'] = gmail
                 self.user_info.user_data['user_role'] = role
                 self.user_info.user_data['username'] = username
                 self.user_info.user_data['favorite'] = favorite
                 self.user_info.user_data['age'] = age
+                self.user_info.user_data['comics_followed'] = comics_followed
 
     def update(self, age, favorite, avatar):
         self.user_info.user_data['age'] = age
