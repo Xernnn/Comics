@@ -86,4 +86,4 @@ class SortSubMenu:
         order_by = (self.order_by,)
         cursor.execute("INSERT INTO sort(order_by)  VALUES(%s)", order_by)
         # Call the sort_and_update_content function
-        self.action_callback(self.order_by)
+        self.action_callback()
