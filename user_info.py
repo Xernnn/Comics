@@ -6,9 +6,8 @@ import mysql.connector as sql
 from tkinter import ttk
 from delete_user import Delete
 
-db = sql.connect(host="localhost", user="root", password="root", database="comics", port=3306, autocommit=True)
+db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
 cursor = db.cursor(buffered=True)
-
 
 class UserInfo:
     def __init__(self, window, cursor, update_user_icon_callback=None):
@@ -59,7 +58,7 @@ class UserInfo:
         # User's info
         username_label = tk.Label(self.user_info_window, text=f"Username: {self.user_data['username']}")
         username_label.grid(row=0, column=1, sticky=tk.W, pady=(10, 0))
-
+        
         email_label = tk.Label(self.user_info_window, text=f"Email: {self.user_data['email']}")
         email_label.grid(row=1, column=1, sticky=tk.W)
 
@@ -69,11 +68,10 @@ class UserInfo:
         user_role_label = tk.Label(self.user_info_window, text=f"User Role: {self.user_data['user_role']}")
         user_role_label.grid(row=3, column=1, sticky=tk.W)
 
-        favorite_label = tk.Label(self.user_info_window, text=f"Favorite: {self.user_data['favorite']}")
+        favorite_label = tk.Label(self.user_info_window, text=f"About me: {self.user_data['favorite']}")
         favorite_label.grid(row=4, column=1, sticky=tk.W)
 
-        comics_followed_label = tk.Label(self.user_info_window,
-                                         text=f"Comics followed: {self.user_data['comics_followed']}")
+        comics_followed_label = tk.Label(self.user_info_window, text=f"Comics followed: {self.user_data['comics_followed']}")
         comics_followed_label.grid(row=5, column=1, sticky=tk.W)
 
         # Add a new column and configure it to expand
@@ -81,18 +79,23 @@ class UserInfo:
 
         # Button
         button = tk.Button(self.user_info_window, text="Update", command=self.update)
-        button.grid(row=8, column=1, pady=(40, 20), sticky=tk.E + tk.W)
+        button.grid(row=6, column=1, pady=(10, 5), sticky=tk.E + tk.W)
+        button.configure(anchor='center')
+        
+        button = tk.Button(self.user_info_window, text="Show Followed Comics", command=self.show_followed_comics)
+        button.grid(row=7, column=1, pady=(10, 5), sticky=tk.E + tk.W)
         button.configure(anchor='center')
 
+        
         if self.user_data['user_role'] == 'User':
-            button = tk.Button(self.user_info_window, text="Delete", command=self.hehe)
-            button.grid(row=9, column=1, pady=(20, 10), sticky=tk.E + tk.W)
+            button = tk.Button(self.user_info_window, text="Delete Account", command=self.hehe)
+            button.grid(row=8, column=1, pady=(10, 5), sticky=tk.E + tk.W)
             button.configure(anchor='center')
         else:
-            button = tk.Button(self.user_info_window, text="Show user list", command=self.show)
-            button.grid(row=9, column=1, pady=(20, 10), sticky=tk.E + tk.W)
+            button = tk.Button(self.user_info_window, text="Show User List", command=self.show)
+            button.grid(row=10, column=1, pady=(10, 5), sticky=tk.E + tk.W)
             button.configure(anchor='center')
-
+            
         if self.user_data['user_role'] == 'Admin':
             button = tk.Button(self.user_info_window, text="Delete user", command=self.delete_user)
             button.grid(row=10, column=1, pady=(20, 10), sticky=tk.E + tk.W)
@@ -112,7 +115,7 @@ class UserInfo:
 
         user_data = {
             "age": self.user_data['age'],
-            "favorite": self.user_data['favorite'],
+            "about me": self.user_data['favorite'],
             "avatar": self.user_data['avatar'],
             "username": self.user_data['username']
         }
@@ -128,8 +131,8 @@ class UserInfo:
         self.update_user_icon_callback = callback
 
     def hehe(self):
-        data = (self.user_data['username'],)
-        cursor.execute("DELETE FROM table_name WHERE username = %s", data)
+        data = (self.user_data['username'], )
+        cursor.execute("DELETE FROM users WHERE username = %s", data)
 
     def show(self):
         cursor.execute("SELECT * FROM users")
@@ -144,6 +147,16 @@ class UserInfo:
         my_tree = ttk.Treeview(tree_window)
         my_tree["columns"] = ("Username", "Password", "Avatar", "Gmail", "Role", "Age", "About me", "Comics_followed")
 
+        my_tree.column("#0", width=30)
+        my_tree.column("Username", width=100)
+        my_tree.column("Password", width=100)
+        my_tree.column("Avatar", width=100)
+        my_tree.column("Gmail", width=150)
+        my_tree.column("Role", width=50)
+        my_tree.column("Age", width=30)
+        my_tree.column("About me", width=150)
+        my_tree.column("Comics_followed", width=120)
+        
         my_tree.heading("#0", text="ID")
         my_tree.heading("Username", text="Username")
         my_tree.heading("Password", text="Password")
@@ -155,8 +168,31 @@ class UserInfo:
         my_tree.heading("Comics_followed", text="Comics followed")
         count = 0
         for user in datas:
-            my_tree.insert("", "end", text=count,
-                           values=(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]))
+            my_tree.insert("", "end", text=count, values=(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]))
             count = count + 1
         my_tree.pack()
 
+    def show_followed_comics(self):
+        current_username = self.user_data['username']
+        cursor.execute("SELECT * FROM followed_comics WHERE username = %s", (current_username,))
+        followed_comics = cursor.fetchall()
+
+        # create a new Toplevel window
+        tree_window = tk.Toplevel(self.user_info_window)
+        tree_window.title("Followed Comics")
+        tree_window.geometry("400x300")
+
+        # create the treeview widget and configure columns
+        my_tree = ttk.Treeview(tree_window)
+        my_tree["columns"] = ("Title", "Username")
+
+        my_tree.column("#0", width=30)
+        my_tree.column("Title", width=200)
+
+        my_tree.heading("#0", text="ID")
+        my_tree.heading("Title", text="Title")
+
+        for comic in followed_comics:
+            my_tree.insert("", "end", text=comic[0], values=(comic[1]))
+
+        my_tree.pack()
