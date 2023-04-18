@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 from Update import Update
 import requests
 import mysql.connector as sql
+from tkinter import ttk
 
 db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
 cursor = db.cursor(buffered=True)
@@ -79,6 +80,15 @@ class UserInfo:
         button = tk.Button(self.user_info_window, text="Update", command=self.update)
         button.grid(row=8, column=1, pady=(40, 20), sticky=tk.E + tk.W)
         button.configure(anchor='center')
+        
+        if self.user_data['user_role'] == 'user':
+            button = tk.Button(self.user_info_window, text="Delete", command=self.hehe)
+            button.grid(row=9, column=1, pady=(20, 10), sticky=tk.E + tk.W)
+            button.configure(anchor='center')
+        else:
+            button = tk.Button(self.user_info_window, text="Show user list", command=self.show)
+            button.grid(row=9, column=1, pady=(20, 10), sticky=tk.E + tk.W)
+            button.configure(anchor='center')
 
     def update(self):
         update_window = Update(self.user_info_window)
@@ -106,4 +116,35 @@ class UserInfo:
     def set_update_user_icon_callback(self, callback):
         self.update_user_icon_callback = callback
 
+    def hehe(self):
+        data = self.user_data['username']
+        cursor.execute("DELETE FROM table_name WHERE username = %s", data)
+
+    def show(self):
+        cursor.execute("SELECT * FROM users")
+        datas = cursor.fetchall()
+
+        # create a new Toplevel window
+        tree_window = tk.Toplevel(self.user_info_window)
+        tree_window.title("User List")
+        tree_window.geometry("600x300")
+
+        # create the treeview widget and configure columns
+        my_tree = ttk.Treeview(tree_window)
+        my_tree["columns"] = ("Username", "Password", "Avatar", "Gmail", "Role", "Age", "About me", "Comics_followed")
+
+        my_tree.heading("#0", text="ID")
+        my_tree.heading("Username", text="Username")
+        my_tree.heading("Password", text="Password")
+        my_tree.heading("Avatar", text="Avatar")
+        my_tree.heading("Gmail", text="Gmail")
+        my_tree.heading("Role", text="Role")
+        my_tree.heading("Age", text="Age")
+        my_tree.heading("About me", text="About me")
+        my_tree.heading("Comics_followed", text="Comics followed")
+        count = 0
+        for user in datas:
+            my_tree.insert("", "end", text=count, values=(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]))
+            count = count + 1
+        my_tree.pack()
 

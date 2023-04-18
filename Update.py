@@ -37,7 +37,7 @@ class Update:
         self.age_entry = tk.Entry(update_frame)
         self.age_entry.grid(row=0, column=1, pady=(0, 5), padx=(2, 0), sticky=tk.W)
 
-        favorite_label = tk.Label(update_frame, text="Favorite:")
+        favorite_label = tk.Label(update_frame, text="About me:")
         favorite_label.grid(row=1, column=0, pady=(0, 5), sticky=tk.W)
 
         self.favorite_entry = tk.Entry(update_frame)
