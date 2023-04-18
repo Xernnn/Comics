@@ -4,9 +4,11 @@ from Update import Update
 import requests
 import mysql.connector as sql
 from tkinter import ttk
+from delete_user import Delete
 
-db = sql.connect(host="localhost",user="root",password="root",database="comics",port=3306,autocommit=True)
+db = sql.connect(host="localhost", user="root", password="root", database="comics", port=3306, autocommit=True)
 cursor = db.cursor(buffered=True)
+
 
 class UserInfo:
     def __init__(self, window, cursor, update_user_icon_callback=None):
@@ -33,7 +35,7 @@ class UserInfo:
 
         # Center the window on the screen
         window_width = 400
-        window_height = 300
+        window_height = 400
         screen_width = self.user_info_window.winfo_screenwidth()
         screen_height = self.user_info_window.winfo_screenheight()
 
@@ -57,7 +59,7 @@ class UserInfo:
         # User's info
         username_label = tk.Label(self.user_info_window, text=f"Username: {self.user_data['username']}")
         username_label.grid(row=0, column=1, sticky=tk.W, pady=(10, 0))
-        
+
         email_label = tk.Label(self.user_info_window, text=f"Email: {self.user_data['email']}")
         email_label.grid(row=1, column=1, sticky=tk.W)
 
@@ -70,7 +72,8 @@ class UserInfo:
         favorite_label = tk.Label(self.user_info_window, text=f"Favorite: {self.user_data['favorite']}")
         favorite_label.grid(row=4, column=1, sticky=tk.W)
 
-        comics_followed_label = tk.Label(self.user_info_window, text=f"Comics followed: {self.user_data['comics_followed']}")
+        comics_followed_label = tk.Label(self.user_info_window,
+                                         text=f"Comics followed: {self.user_data['comics_followed']}")
         comics_followed_label.grid(row=5, column=1, sticky=tk.W)
 
         # Add a new column and configure it to expand
@@ -80,8 +83,8 @@ class UserInfo:
         button = tk.Button(self.user_info_window, text="Update", command=self.update)
         button.grid(row=8, column=1, pady=(40, 20), sticky=tk.E + tk.W)
         button.configure(anchor='center')
-        
-        if self.user_data['user_role'] == 'user':
+
+        if self.user_data['user_role'] == 'User':
             button = tk.Button(self.user_info_window, text="Delete", command=self.hehe)
             button.grid(row=9, column=1, pady=(20, 10), sticky=tk.E + tk.W)
             button.configure(anchor='center')
@@ -89,6 +92,14 @@ class UserInfo:
             button = tk.Button(self.user_info_window, text="Show user list", command=self.show)
             button.grid(row=9, column=1, pady=(20, 10), sticky=tk.E + tk.W)
             button.configure(anchor='center')
+
+        if self.user_data['user_role'] == 'Admin':
+            button = tk.Button(self.user_info_window, text="Delete user", command=self.delete_user)
+            button.grid(row=10, column=1, pady=(20, 10), sticky=tk.E + tk.W)
+            button.configure(anchor='center')
+
+    def delete_user(self):
+        Delete(self.user_info_window)
 
     def update(self):
         update_window = Update(self.user_info_window)
@@ -117,7 +128,7 @@ class UserInfo:
         self.update_user_icon_callback = callback
 
     def hehe(self):
-        data = self.user_data['username']
+        data = (self.user_data['username'],)
         cursor.execute("DELETE FROM table_name WHERE username = %s", data)
 
     def show(self):
@@ -144,7 +155,8 @@ class UserInfo:
         my_tree.heading("Comics_followed", text="Comics followed")
         count = 0
         for user in datas:
-            my_tree.insert("", "end", text=count, values=(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]))
+            my_tree.insert("", "end", text=count,
+                           values=(user[0], user[1], user[2], user[3], user[4], user[5], user[6], user[7]))
             count = count + 1
         my_tree.pack()
 
