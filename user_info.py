@@ -172,27 +172,5 @@ class UserInfo:
             count = count + 1
         my_tree.pack()
 
-    def show_followed_comics(self):
-        current_username = self.user_data['username']
-        cursor.execute("SELECT * FROM followed_comics WHERE username = %s", (current_username,))
-        followed_comics = cursor.fetchall()
-
-        # create a new Toplevel window
-        tree_window = tk.Toplevel(self.user_info_window)
-        tree_window.title("Followed Comics")
-        tree_window.geometry("400x300")
-
-        # create the treeview widget and configure columns
-        my_tree = ttk.Treeview(tree_window)
-        my_tree["columns"] = ("Title", "Username")
-
-        my_tree.column("#0", width=30)
-        my_tree.column("Title", width=200)
-
-        my_tree.heading("#0", text="ID")
-        my_tree.heading("Title", text="Title")
-
-        for comic in followed_comics:
-            my_tree.insert("", "end", text=comic[0], values=(comic[1]))
 
         my_tree.pack()
