@@ -33,8 +33,8 @@ class UserInfo:
         self.user_info_window.title("User Info")
 
         # Center the window on the screen
-        window_width = 400
-        window_height = 400
+        window_width = 300
+        window_height = 300
         screen_width = self.user_info_window.winfo_screenwidth()
         screen_height = self.user_info_window.winfo_screenheight()
 
@@ -93,12 +93,12 @@ class UserInfo:
             button.configure(anchor='center')
         else:
             button = tk.Button(self.user_info_window, text="Show User List", command=self.show)
-            button.grid(row=10, column=1, pady=(10, 5), sticky=tk.E + tk.W)
+            button.grid(row=8, column=1, pady=(10, 5), sticky=tk.E + tk.W)
             button.configure(anchor='center')
             
         if self.user_data['user_role'] == 'Admin':
             button = tk.Button(self.user_info_window, text="Delete user", command=self.delete_user)
-            button.grid(row=10, column=1, pady=(20, 10), sticky=tk.E + tk.W)
+            button.grid(row=9, column=1, pady=(10, 5), sticky=tk.E + tk.W)
             button.configure(anchor='center')
 
     def delete_user(self):
@@ -172,5 +172,27 @@ class UserInfo:
             count = count + 1
         my_tree.pack()
 
+    def show_followed_comics(self):
+        current_username = self.user_data['username']
+        cursor.execute("SELECT * FROM followed_comics WHERE username = %s", (current_username,))
+        followed_comics = cursor.fetchall()
+
+        # create a new Toplevel window
+        tree_window = tk.Toplevel(self.user_info_window)
+        tree_window.title("Followed Comics")
+        tree_window.geometry("400x300")
+
+        # create the treeview widget and configure columns
+        my_tree = ttk.Treeview(tree_window)
+        my_tree["columns"] = ("Title", "Username")
+
+        my_tree.column("#0", width=30)
+        my_tree.column("Title", width=200)
+
+        my_tree.heading("#0", text="ID")
+        my_tree.heading("Title", text="Title")
+
+        for comic in followed_comics:
+            my_tree.insert("", "end", text=comic[0], values=(comic[1]))
 
         my_tree.pack()

@@ -77,9 +77,5 @@ class Management(Header, UserMenu, Content):
         from comics import ComicDetails
         ComicDetails(self.window, comic)
         
-    def search_callback(self, search_query):
-        results = self.header.search(1, search_query)
-        self.content.search_and_update_content(results)
-        
     def set_update_user_icon_callback(self, callback):
         self.user_info.set_update_user_icon_callback(callback)
