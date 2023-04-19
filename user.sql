@@ -13,6 +13,8 @@ CREATE TABLE users (
     PRIMARY KEY (username)
 );
 select * from users;
+insert into users(username, password, avatar, gmail, role, age, favorite, comics_followed) 
+values ('g12', '123', 'https://i.imgur.com/HZ86ajE.png', 'g12@usth', 'Admin', '20','','');
 -- drop table users;
 
 CREATE TABLE comics (
